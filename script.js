@@ -57,3 +57,16 @@ function calculateAll() {
     // إظهار الملاحظة عند ظهور النتائج
     document.getElementById("note").style.display = "block";
 }
+
+// دالة جديدة لحساب قطر الرداد
+function calculateRadadDiameter() {
+    const khaznaDiameter = parseFloat(document.getElementById("khaznaDiameter").value);
+
+    if (isNaN(khaznaDiameter) || khaznaDiameter <= 0) {
+        alert("الرجاء إدخال قطر خزنة صحيح!");
+        return;
+    }
+
+    const radadDiameter = (khaznaDiameter - (khaznaDiameter * 0.191)).toFixed(2);
+    document.getElementById("radadResult").innerText = `قطر الرداد: ${radadDiameter} سم`;
+}
