@@ -119,3 +119,19 @@ button:hover {
     text-align: right;
     display: none; /* الملاحظة مخفية بشكل افتراضي */
 }
+
+/* تنسيق علامة التبويب الجديدة */
+.tab {
+    margin-top: 20px;
+}
+
+.tab h2 {
+    font-size: 20px;
+    color: #ffd700;
+    margin-bottom: 10px;
+}
+
+.tab p {
+    font-size: 16px;
+    color: #fff;
+}
