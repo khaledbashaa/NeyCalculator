@@ -1,106 +1,127 @@
-// ملفات JSON للغات
-const languages = {
-    ar: {
-        tabNai: "صناعة الناي",
-        tabKawala: "صناعة الكولة",
-        naiTitle: "حساب مقاسات الناي - الثقوب والفكوك",
-        lengthLabel: "أدخل طول الناي (بالسنتيمتر):",
-        calculateButton: "حساب الثقوب والفكوك",
-        noteTitle: "ملاحظة:",
-        noteText1: "- يجب رفع الثقب الخلفي 5 ملم باتجاه الخزنة.",
-        noteText2: "- بداية قياس أماكن الثقوب تبدأ من أول الرداد باتجاه الخزنة.",
-        holesHeader: "أماكن الثقوب",
-        holeLabel: "الثقب",
-        distanceLabel: "المسافة (سم)",
-        fukukHeader: "أطوال الفكوك",
-        fukLabel: "الفك",
-        lengthLabel2: "الطول (سم)",
-        radadTitle: "حساب قطر الرداد بناءً على قطر الخزنة",
-        khaznaLabel: "أدخل قطر الخزنة (بالسنتيمتر):",
-        radadButton: "حساب قطر الرداد",
-        kawalaTitle: "حساب أطوال الفكوك وأماكن الثقوب للكولة",
-        kawalaLengthLabel: "أدخل طول الكولة (بالسنتيمتر):",
-        kawalaButton: "احسب",
-        kawalaHolesHeader: "أماكن الثقوب",
-        kawalaHoleLabel: "الثقب",
-        kawalaDistanceLabel: "المسافة (سم)",
-        kawalaFukukHeader: "أطوال الفكوك",
-        kawalaFukLabel: "الفك",
-        kawalaLengthLabel2: "الطول (سم)",
-        footerText: "تصميم وتطوير:",
-        groupLink: "جروب تعليم آلة الكولة على الفيسبوك"
-    },
-    en: {
-        tabNai: "Nay Making",
-        tabKawala: "Kawala Making",
-        naiTitle: "Calculate Nay Measurements - Holes and Joints",
-        lengthLabel: "Enter Nay length (in cm):",
-        calculateButton: "Calculate Holes and Joints",
-        noteTitle: "Note:",
-        noteText1: "- The back hole should be raised 5mm towards the Khazna.",
-        noteText2: "- The measurement of hole positions starts from the Radad towards the Khazna.",
-        holesHeader: "Hole Positions",
-        holeLabel: "Hole",
-        distanceLabel: "Distance (cm)",
-        fukukHeader: "Joints Lengths",
-        fukLabel: "Joint",
-        lengthLabel2: "Length (cm)",
-        radadTitle: "Calculate Radad Diameter Based on Khazna Diameter",
-        khaznaLabel: "Enter Khazna diameter (in cm):",
-        radadButton: "Calculate Radad Diameter",
-        kawalaTitle: "Calculate Kawala Joints and Hole Positions",
-        kawalaLengthLabel: "Enter Kawala length (in cm):",
-        kawalaButton: "Calculate",
-        kawalaHolesHeader: "Hole Positions",
-        kawalaHoleLabel: "Hole",
-        kawalaDistanceLabel: "Distance (cm)",
-        kawalaFukukHeader: "Joints Lengths",
-        kawalaFukLabel: "Joint",
-        kawalaLengthLabel2: "Length (cm)",
-        footerText: "Designed and Developed by:",
-        groupLink: "Kawala Learning Group on Facebook"
-    },
-    fr: {
-        tabNai: "Fabrication de Nay",
-        tabKawala: "Fabrication de Kawala",
-        naiTitle: "Calcul des mesures du Nay - Trous et Joints",
-        lengthLabel: "Entrez la longueur du Nay (en cm):",
-        calculateButton: "Calculer les Trous et Joints",
-        noteTitle: "Remarque:",
-        noteText1: "- Le trou arrière doit être surélevé de 5 mm vers la Khazna.",
-        noteText2: "- La mesure des positions des trous commence du Radad vers la Khazna.",
-        holesHeader: "Positions des Trous",
-        holeLabel: "Trou",
-        distanceLabel: "Distance (cm)",
-        fukukHeader: "Longueurs des Joints",
-        fukLabel: "Joint",
-        lengthLabel2: "Longueur (cm)",
-        radadTitle: "Calculer le Diamètre du Radad Basé sur le Diamètre de la Khazna",
-        khaznaLabel: "Entrez le diamètre de la Khazna (en cm):",
-        radadButton: "Calculer le Diamètre du Radad",
-        kawalaTitle: "Calcul des Joints et Positions des Trous de la Kawala",
-        kawalaLengthLabel: "Entrez la longueur de la Kawala (en cm):",
-        kawalaButton: "Calculer",
-        kawalaHolesHeader: "Positions des Trous",
-        kawalaHoleLabel: "Trou",
-        kawalaDistanceLabel: "Distance (cm)",
-        kawalaFukukHeader: "Longueurs des Joints",
-        kawalaFukLabel: "Joint",
-        kawalaLengthLabel2: "Longueur (cm)",
-        footerText: "Conçu et Développé par:",
-        groupLink: "Groupe d'Apprentissage de la Kawala sur Facebook"
-    }
-};
+// وظيفة لعرض علامات التبويب
+function showTab(tabName) {
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.classList.remove('active'));
 
-// تغيير اللغة
-function changeLanguage(lang) {
-    const texts = languages[lang];
-    for (const key in texts) {
-        const element = document.getElementById(key);
-        if (element) {
-            element.textContent = texts[key];
-        }
-    }
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(button => button.classList.remove('active'));
+
+    document.getElementById(tabName).classList.add('active');
+    document.querySelector(`button[onclick="showTab('${tabName}')"]`).classList.add('active');
 }
 
-// باقي الوظائف (calculateAll, calculateRadadDiameter, calculateKawala) تبقى كما هي
+// وظائف صناعة الناي
+function calculateAll() {
+    const totalLength = parseFloat(document.getElementById("length").value);
+
+    if (isNaN(totalLength) || totalLength <= 0) {
+        alert("الرجاء إدخال طول صحيح!");
+        return;
+    }
+
+    const holePositions = [
+        7.3 / 53,
+        9.7 / 53,
+        12.1 / 53,
+        16.9 / 53,
+        19.3 / 53,
+        21.5 / 53,
+        0.5
+    ];
+
+    const holes = holePositions.map(pos => (pos * totalLength).toFixed(2));
+
+    const holesTableBody = document.querySelector("#holesTable tbody");
+    holesTableBody.innerHTML = `
+        <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
+        <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
+        <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
+        <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
+        <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
+        <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
+        <tr><td>الثقب السابع (الخلفي)</td><td>${holes[6]}</td></tr>
+    `;
+
+    const originalNaiLength = 59.2;
+    const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
+    const ratio = totalLength / originalNaiLength;
+    const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
+
+    const fukukNames = [
+        "الرداد",
+        "الفك الثاني",
+        "الفك الثالث",
+        "الفك الرابع",
+        "الفك الخامس",
+        "الفك السادس",
+        "الفك السابع",
+        "الفك الثامن",
+        "الخزنة"
+    ];
+
+    const fukukTableBody = document.querySelector("#fukukTable tbody");
+    fukukTableBody.innerHTML = newFukuk.map((length, index) => `
+        <tr><td>${fukukNames[index]}</td><td>${length}</td></tr>
+    `).join('');
+
+    document.getElementById("note").style.display = "block";
+}
+
+function calculateRadadDiameter() {
+    const khaznaDiameter = parseFloat(document.getElementById("khaznaDiameter").value);
+
+    if (isNaN(khaznaDiameter) || khaznaDiameter <= 0) {
+        alert("الرجاء إدخال قطر خزنة صحيح!");
+        return;
+    }
+
+    const radadDiameter = (khaznaDiameter - (khaznaDiameter * 0.191)).toFixed(2);
+    document.getElementById("radadResult").innerText = `قطر الرداد: ${radadDiameter} سم`;
+}
+
+// وظائف صناعة الكولة
+function calculateKawala() {
+    const totalLength = parseFloat(document.getElementById('totalLength').value);
+
+    if (isNaN(totalLength) || totalLength <= 0) {
+        alert("الرجاء إدخال قيمة صحيحة!");
+        return;
+    }
+
+    const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
+    const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
+    const jawLengths = jawRatios.map(ratio => (ratio / sumJawRatios) * totalLength);
+
+    const holePositions = [
+        8.6 / 56,
+        12.9 / 56,
+        17.2 / 56,
+        23.5 / 56,
+        27.8 / 56,
+        32.1 / 56
+    ];
+    const holes = holePositions.map(pos => (pos * totalLength).toFixed(2));
+
+    const kawalaHolesTableBody = document.querySelector("#kawalaHolesTable tbody");
+    kawalaHolesTableBody.innerHTML = `
+        <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
+        <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
+        <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
+        <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
+        <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
+        <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
+    `;
+
+    const fukukNames = [
+        "الرداد",
+        "الفك الثاني",
+        "الفك الثالث",
+        "الفك الرابع",
+        "الفك الخامس (فك الخزنة)"
+    ];
+
+    const kawalaFukukTableBody = document.querySelector("#kawalaFukukTable tbody");
+    kawalaFukukTableBody.innerHTML = jawLengths.map((length, index) => `
+        <tr><td>${fukukNames[index]}</td><td>${length.toFixed(2)} سم</td></tr>
+    `).join('');
+}
