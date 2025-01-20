@@ -8,40 +8,33 @@
 </head>
 <body>
     <div class="container">
-        <!-- أزرار تبديل اللغة -->
-        <div class="language-buttons">
-            <button onclick="changeLanguage('ar')">العربية</button>
-            <button onclick="changeLanguage('en')">English</button>
-            <button onclick="changeLanguage('fr')">Français</button>
-        </div>
-
         <div class="tabs">
-            <button class="tab-button active" onclick="showTab('nai')" id="tabNai">صناعة الناي</button>
-            <button class="tab-button" onclick="showTab('kawala')" id="tabKawala">صناعة الكولة</button>
+            <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
+            <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
         </div>
 
         <!-- قسم صناعة الناي -->
         <div id="nai" class="tab-content active">
-            <h1 id="naiTitle">حساب مقاسات الناي - الثقوب والفكوك</h1>
-            <label for="length" id="lengthLabel">أدخل طول الناي (بالسنتيمتر):</label>
+            <h1>حساب مقاسات الناي - الثقوب والفكوك</h1>
+            <label for="length">أدخل طول الناي (بالسنتيمتر):</label>
             <input type="number" id="length" placeholder="مثال: 53">
-            <button onclick="calculateAll()" id="calculateButton">حساب الثقوب والفكوك</button>
+            <button onclick="calculateAll()">حساب الثقوب والفكوك</button>
 
             <div class="note" id="note">
-                <strong id="noteTitle">ملاحظة:</strong><br>
-                <span id="noteText1">- يجب رفع الثقب الخلفي 5 ملم باتجاه الخزنة.</span><br>
-                <span id="noteText2">- بداية قياس أماكن الثقوب تبدأ من أول الرداد باتجاه الخزنة.</span>
+                <strong>ملاحظة:</strong><br>
+                - يجب رفع الثقب الخلفي 5 ملم باتجاه الخزنة.<br>
+                - بداية قياس أماكن الثقوب تبدأ من أول الرداد باتجاه الخزنة.
             </div>
 
             <div class="result-table" id="resultTable">
                 <table id="holesTable">
                     <thead>
                         <tr>
-                            <th colspan="2" id="holesHeader">أماكن الثقوب</th>
+                            <th colspan="2">أماكن الثقوب</th>
                         </tr>
                         <tr>
-                            <th id="holeLabel">الثقب</th>
-                            <th id="distanceLabel">المسافة (سم)</th>
+                            <th>الثقب</th>
+                            <th>المسافة (سم)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,11 +45,11 @@
                 <table id="fukukTable">
                     <thead>
                         <tr>
-                            <th colspan="2" id="fukukHeader">أطوال الفكوك</th>
+                            <th colspan="2">أطوال الفكوك</th>
                         </tr>
                         <tr>
-                            <th id="fukLabel">الفك</th>
-                            <th id="lengthLabel2">الطول (سم)</th>
+                            <th>الفك</th>
+                            <th>الطول (سم)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,30 +59,30 @@
             </div>
 
             <div class="tab">
-                <h2 id="radadTitle">حساب قطر الرداد بناءً على قطر الخزنة</h2>
-                <label for="khaznaDiameter" id="khaznaLabel">أدخل قطر الخزنة (بالسنتيمتر):</label>
+                <h2>حساب قطر الرداد بناءً على قطر الخزنة</h2>
+                <label for="khaznaDiameter">أدخل قطر الخزنة (بالسنتيمتر):</label>
                 <input type="number" id="khaznaDiameter" placeholder="مثال: 1.8">
-                <button onclick="calculateRadadDiameter()" id="radadButton">حساب قطر الرداد</button>
+                <button onclick="calculateRadadDiameter()">حساب قطر الرداد</button>
                 <p id="radadResult"></p>
             </div>
         </div>
 
         <!-- قسم صناعة الكولة -->
         <div id="kawala" class="tab-content">
-            <h1 id="kawalaTitle">حساب أطوال الفكوك وأماكن الثقوب للكولة</h1>
-            <label for="totalLength" id="kawalaLengthLabel">أدخل طول الكولة (بالسنتيمتر):</label>
+            <h1>حساب أطوال الفكوك وأماكن الثقوب للكولة</h1>
+            <label for="totalLength">أدخل طول الكولة (بالسنتيمتر):</label>
             <input type="number" id="totalLength" placeholder="مثال: 56">
-            <button onclick="calculateKawala()" id="kawalaButton">احسب</button>
+            <button onclick="calculateKawala()">احسب</button>
 
             <div class="result-table" id="kawalaResults">
                 <table id="kawalaHolesTable">
                     <thead>
                         <tr>
-                            <th colspan="2" id="kawalaHolesHeader">أماكن الثقوب</th>
+                            <th colspan="2">أماكن الثقوب</th>
                         </tr>
                         <tr>
-                            <th id="kawalaHoleLabel">الثقب</th>
-                            <th id="kawalaDistanceLabel">المسافة (سم)</th>
+                            <th>الثقب</th>
+                            <th>المسافة (سم)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,11 +93,11 @@
                 <table id="kawalaFukukTable">
                     <thead>
                         <tr>
-                            <th colspan="2" id="kawalaFukukHeader">أطوال الفكوك</th>
+                            <th colspan="2">أطوال الفكوك</th>
                         </tr>
                         <tr>
-                            <th id="kawalaFukLabel">الفك</th>
-                            <th id="kawalaLengthLabel2">الطول (سم)</th>
+                            <th>الفك</th>
+                            <th>الطول (سم)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,12 +108,12 @@
         </div>
 
         <div class="footer">
-            <span id="footerText">تصميم وتطوير:</span> 
+            تصميم وتطوير: 
             <a href="https://www.facebook.com/kawana667788/" target="_blank">خالد باشا</a> 
             و
             <a href="https://www.facebook.com/profile.php?id=100006318275944" target="_blank">بدر محمد</a> 
             - 
-            <a href="https://www.facebook.com/groups/501641503562283" target="_blank" id="groupLink">جروب تعليم آلة الكولة على الفيسبوك</a>
+            <a href="https://www.facebook.com/groups/501641503562283" target="_blank">جروب تعليم آلة الكولة على الفيسبوك</a>
         </div>
     </div>
 
