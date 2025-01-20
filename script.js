@@ -1,3 +1,40 @@
+// دالة لإرسال الرسائل إلى Gemini
+async function sendMessageToGemini() {
+    const userInput = document.getElementById("userInput").value;
+    if (!userInput) {
+        alert("الرجاء إدخال رسالة!");
+        return;
+    }
+
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML += `<div class="user-message">أنت: ${userInput}</div>`;
+
+    // إرسال الرسالة إلى Gemini API
+    const apiKey = "AIzaSyDNJoqVshGLywqlsv-CoC3vuthjsrncBBw"; // مفتاح API الخاص بك
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+
+    const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            contents: [{
+                parts: [{
+                    text: userInput
+                }]
+            }]
+        })
+    });
+
+    const data = await response.json();
+    const aiResponse = data.candidates[0].content.parts[0].text;
+
+    chatBox.innerHTML += `<div class="ai-message">Gemini: ${aiResponse}</div>`;
+    document.getElementById("userInput").value = ""; // مسح حقل الإدخال بعد الإرسال
+}
+
+// دالة لحساب الثقوب والفكوك
 function calculateAll() {
     const totalLength = parseFloat(document.getElementById("length").value);
 
