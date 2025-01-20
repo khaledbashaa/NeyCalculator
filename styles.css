@@ -135,34 +135,3 @@ button:hover {
     font-size: 16px;
     color: #fff;
 }
-
-/* تنسيق قسم الدردشة */
-.ai-chat {
-    margin-top: 20px;
-}
-
-.ai-chat h2 {
-    font-size: 20px;
-    color: #ffd700;
-    margin-bottom: 10px;
-}
-
-#chatBox {
-    background-color: #333;
-    padding: 10px;
-    border-radius: 10px;
-    height: 200px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    text-align: right;
-}
-
-.user-message {
-    color: #fff;
-    margin-bottom: 10px;
-}
-
-.ai-message {
-    color: #ffd700;
-    margin-bottom: 10px;
-}
