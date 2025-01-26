@@ -36,7 +36,7 @@ label {
     color: #fff;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -154,4 +154,12 @@ button:hover {
 
 .tab-content.active {
     display: block;
+}
+
+/* تنسيق قسم السلم المقامي */
+.scale-result {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #ffd700;
+    text-align: right;
 }
