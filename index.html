@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -266,7 +267,7 @@
       }
     }
 
-    /* تنسيق مخصص لقسم مفام الراست */
+    /* تنسيق مخصص لقسم السلم المقامي */
     .scale-selection {
       display: flex;
       justify-content: center;
@@ -337,7 +338,7 @@
     <div class="tabs">
       <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
       <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
-      <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
+      <button class="tab-button" onclick="showTab('scale')"> مقام الراست من كل الدرجات</button>
     </div>
 
     <!-- قسم صناعة الناي -->
@@ -378,9 +379,9 @@
       <div id="kawalaResults" class="result-section"></div>
     </div>
 
-    <!-- قسم مقام الراست -->
+    <!-- قسم السلم المقامي -->
     <div id="scale" class="tab-content">
-      <div class="section-header">استكشف  مقام الراست </div>
+      <div class="section-header">استكشف مقام الراست من كل الدرجات</div>
       <p class="tooltip">اختر الدرجة الموسيقية لعرض السلم المقامي الخاص بها مع معلومات مفصلة عن النغمات والفواصل.</p>
       <div class="scale-selection">
         <select id="scaleSelect">
@@ -393,16 +394,10 @@
           <option value="فا دييز">فا دييز</option>
           <option value="صول بيمول">صول بيمول</option>
           <option value="صول">صول</option>
-          <option value="صول دييز">صول دييز</option>
           <option value="لا بيمول">لا بيمول</option>
           <option value="لا">لا</option>
-          <option value="لا دييز">لا دييز</option>
           <option value="سي بيمول">سي بيمول</option>
           <option value="سي">سي</option>
-          <option value="ري نصف بيمول">ري نصف بيمول</option>
-          <option value="مي نصف بيمول">مي نصف بيمول</option>
-          <option value="فا نصف بيمول">فا نصف بيمول</option>
-          <option value="صول نصف بيمول">صول نصف بيمول</option>
           <!-- خيار السلم الموسيقي الكامل -->
           <option value="سلم موسيقي كامل">سلم موسيقي كامل</option>
         </select>
@@ -429,23 +424,19 @@
 
     // بيانات سلالم المقامات
     const scales = {
-      " - دو": "دو - ري - مي نصف بيمول - فا - صول - لا - سي نصف بيمول ",
-      " - ري بيمول": "ري بيمول - مي بيمول - فا نصف بيمول - صول بيمول - لا بيمول - سي بيمول - دو نصف بيمول ",
-      " - ري": "ري - مي - فا نصف دييز - صول - لا - سي - دو نصف دييز  ",
-      " - مي بيمول": "مي بيمول - فا - صول نصف بيمول - لا بيمول - سي بيمول - دو - ري نصف بيمول",
-      " - مي": "مي - فا دييز - صول نصف دييز - لا - سي - دو دييز - ري نصف دييز ",
-      " - فا": "فا - صول - لا نصف بيمول - سي بيمول - دو - ري - مي نصف بيمول ",
-      " - فا دييز": "فا دييز - صول دييز - لا نصف دييز - سي - دو دييز - ري دييز - مي نصف دييز ",
-      "صول بيمول": "صول بيمول - لا بيمول - لا نصف دييز - سي - ري بيمول - مي بيمول - مي نصف دييز  ",
-      "صول": "صول - لا - سي نصف بيمول - دو - ري - مي - فا نصف دييز  ",
-      "لا بيمول": "لا بيمول - سي بيمول - دو نصف بيمول - ري بيمول - مي بيمول - فا - صول نصف بيمول  ",
-      "لا": "لا - سي - دو نصف دييز - ري - مي - فا دييز - صول نصف دييز  ",
-      "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف بيمول   ",
-      "سي": "سي - دو دييز - ري نصف دييز - مي - فا دييز - صول دييز - لا نصف دييز  ",
-      "ري نصف بيمول": "ري نصف بيمول - مي نصف بيمول - فا - صول نصف بيمول - لا نصف بيمول - سي نصف بيمول - دو نصف دييز    ",
-      "مي نصف بيمول": "مي نصف بيمول - فا نصف دييز - صول - لا نصف بيمول - سي نصف بيمول - دو نصف دييز - ري    ",
-      "فا نصف بيمول": "فا نصف بيمول - صول نصف بيمول - لا بيمول - لا نصف دييز - سي نصف دييز - ري نصف بيمول - مي بيمول    ",
-      "صول نصف بيمول": "صول نصف بيمول - لا نصف بيمول - سي بيمول - سي نصف دييز - ري نصف بيمول - مي نصف دييز - فا    ",
+      "دو": "دو - ري - مي نصف بيمول - فا - صول - لا - سي نصف بيمول - دو",
+      "ري بيمول": "ري بيمول - مي بيمول - فا نصف بيمول - صول بيمول - لا بيمول - سي بيمول - دو نصف بيمول - ري بيمول",
+      "ري": "ري - مي - فا نصف دييز - صول - لا - سي - دو نصف دييز - ري",
+      "مي بيمول": "مي بيمول - فا - صول نصف بيمول - لا بيمول - سي بيمول - دو - ري نصف بيمول - مي بيمول",
+      "مي": "مي - فا دييز - صول نصف دييز - لا - سي - دو دييز - ري نصف دييز - مي",
+      "فا": "فا - صول - لا نصف بيمول - سي بيمول - دو - ري - مي نصف بيمول - فا",
+      "فا دييز": "فا دييز - صول دييز - لا نصف دييز - سي - دو دييز - ري دييز - مي نصف دييز - فا دييز",
+      "صول بيمول": "صول بيمول - لا بيمول - لا نصف دييز - سي - ري بيمول - مي بيمول - فا نصف بيمول - صول بيمول",
+      "صول": "صول - لا - سي نصف بيمول - دو - ري - مي - فا نصف دييز - صول",
+      "لا بيمول": "لا بيمول - سي بيمول - دو نصف بيمول - ري بيمول - مي بيمول - فا - صول نصف بيمول - لا بيمول",
+      "لا": "لا - سي - دو نصف دييز - ري - مي - فا دييز - صول نصف دييز - لا",
+      "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف بيمول - سي بيمول",
+      "سي": "سي - دو دييز - ري نصف دييز - مي - فا دييز - صول دييز - لا نصف دييز - سي",
       // خيار السلم الموسيقي الكامل مع العلامات المطلوبة
       "سلم موسيقي كامل": "ري نصف بيمول - دو نصف دييز - المي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
     };
@@ -454,6 +445,7 @@
     // يرجى استبدال YOUR_FILE_ID_XXX بالمعرف الصحيح أو الرابط المباشر لكل نغمة
     const noteAudioMapping = {
       "دو": "https://dl.dropboxusercontent.com/scl/fi/z4jgny5lj0srv5x9x5x4w/.mp3?rlkey=v7mlmwehjo587k5mvl9zf17zw",
+      "دو دييز": "https://dl.dropboxusercontent.com/scl/fi/h8esky1ivrmuizhstxxsf/.mp3?rlkey=k9qgng4pw5infgbls4oos6kve",
       "دو نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/gz2in1o2q20vflkbmwy8o/.mp3?rlkey=r94ctxnwc4o5tj3exy2u9ugea",
       "دو نصف بيمول": "https://dl.dropboxusercontent.com/scl/fi/8ewokvjeonoff5d57q2f4/.mp3?rlkey=tz3xgs9g9msxl8nx68udu1nqy",
       "ري بيمول": "https://dl.dropboxusercontent.com/scl/fi/n3filph5y7rfn4jw8ifcp/.mp3?rlkey=zmb2l5i4tqyfqtdlv88psrhtf",
@@ -468,9 +460,11 @@
       "فا نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/qg2n65zylzepbvjdv7yrl/.mp3?rlkey=caxwu1ohyv697c5o3q9117vct",
       "صول بيمول": "https://dl.dropboxusercontent.com/scl/fi/vx3zik0e9kohqhpw1vwx0/.mp3?rlkey=1d3jolxpautxqysnt0xsuvucs",
       "صول": "https://dl.dropboxusercontent.com/scl/fi/ax1bynwyequzloxxkj56l/.mp3?rlkey=x1qdeectxgpj4rijd60uj3nfc",
+      "صول دييز": "https://dl.dropboxusercontent.com/scl/fi/ljlihgr4gzhds1gi37i7t/.mp3?rlkey=5204x7yyqqo9tiexntridgkbc",
       "صول نصف بيمول": "https://dl.dropboxusercontent.com/scl/fi/1kqv5htfxm9mjlgfeeup9/.mp3?rlkey=g0tj2ywg88wz0e74t4nkayag8",
       "لا بيمول": "https://dl.dropboxusercontent.com/scl/fi/tcy304d5gynryksy70ttt/.mp3?rlkey=2bv9fi9ire494zrjndmf45g4c",
       "لا": "https://dl.dropboxusercontent.com/scl/fi/3rc1o0zck2mya1tb5rrhr/.mp3?rlkey=9ocdux2cg2kx8ndqkimh1f9gq",
+      "لا دييز": "https://dl.dropboxusercontent.com/scl/fi/jiyfibu441sc03uycezq0/.mp3?rlkey=nwcw5mmb3coo4ymq4vokks6i3",
       "لا نصف بيمول": "https://dl.dropboxusercontent.com/scl/fi/3pxpbpqdv9cshkmfrewn8/.mp3?rlkey=go18adx4y318k1z5zygf6jb7x",
       "لا نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/ml42cxnssxyagix5umds2/.mp3?rlkey=457ugly1dsy4v71nuai591ir9",
       "سي بيمول": "https://dl.dropboxusercontent.com/scl/fi/s5vb3crgs3ov8pz6xkqwb/.mp3?rlkey=adecc3p9ptsq3m2y6y56v6srz",
@@ -505,7 +499,7 @@
       }
     }
 
-    // عرض مقام الراست مع البطاقات وزر تبديل التشغيل لكل نغمة
+    // عرض السلم المقامي مع البطاقات وزر تبديل التشغيل لكل نغمة
     function showScale() {
       const selectedScale = document.getElementById("scaleSelect").value;
       const scaleResultDiv = document.getElementById("scaleResult");
