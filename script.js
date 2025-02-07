@@ -1,8 +1,18 @@
-// كائن لتخزين عناصر الصوت لتفعيل خاصية التبديل (تشغيل/إيقاف)
+// تعريف المتغيّر _0x5bde بشكلٍ عام (لتشفير بعض السلاسل)
+var _0x5bde = [
+  "play",         // 0
+  "paused",       // 1
+  "currentTime",  // 2
+  "innerText",    // 3
+  "▶",           // 4 (رمز التشغيل)
+  "■",           // 5 (رمز الإيقاف)
+  "split",        // 6
+  " - "          // 7
+];
+
 var audioPlayers = {};
 
-// بيانات سلالم المقامات
-const scales = {
+var scales = {
   "دو": "دو - ري - مي نصف بيمول - فا - صول - لا - سي نصف بيمول - دو",
   "ري بيمول": "ري بيمول - مي بيمول - فا نصف بيمول - صول بيمول - لا بيمول - سي بيمول - دو نصف بيمول - ري بيمول",
   "ري": "ري - مي - فا نصف دييز - صول - لا - سي - دو نصف دييز - ري",
@@ -13,15 +23,13 @@ const scales = {
   "صول": "صول - لا - سي نصف بيمول - دو - ري - مي - فا نصف دييز - صول",
   "لا بيمول": "لا بيمول - سي بيمول - دو نصف بيمول - ري بيمول - مي بيمول - فا - صول نصف بيمول - لا بيمول",
   "لا": "لا - سي - دو نصف دييز - ري - مي - فا دييز - صول نصف دييز - لا",
-  "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف بيمول - سي بيمول",
+  "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف دييز - سي بيمول",
   "سي": "سي - دو دييز - ري نصف دييز - مي - فا دييز - صول دييز - لا نصف دييز - سي",
   // خيار السلم الموسيقي الكامل (علامات الثلاث أرباع)
   "سلم موسيقي كامل": "ري نصف بيمول - دو نصف دييز - مي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
 };
 
-// تحديث كائن ربط أسماء النغمات بروابط الأصوات
-// يُرجى استبدال YOUR_FILE_ID_XXX بالروابط المباشرة أو المعرفات الصحيحة
-const noteAudioMapping = {
+var noteAudioMapping = {
   "دو": "https://dl.dropboxusercontent.com/scl/fi/z4jgny5lj0srv5x9x5x4w/.mp3?rlkey=v7mlmwehjo587k5mvl9zf17zw",
   "دو دييز": "https://dl.dropboxusercontent.com/scl/fi/h8esky1ivrmuizhstxxsf/.mp3?rlkey=k9qgng4pw5infgbls4oos6kve",
   "دو نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/gz2in1o2q20vflkbmwy8o/.mp3?rlkey=r94ctxnwc4o5tj3exy2u9ugea",
@@ -54,243 +62,183 @@ const noteAudioMapping = {
   "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/az7muuh9md35tjafx2xes/.mp3?rlkey=tdujey33ahe2h8fcugr5t7ftn"
 };
 
-// دالة تبديل تشغيل/إيقاف الصوت باستخدام زر (تمرير العنصر والنغمة)
+function _0x2d7e(id) {
+  return document.getElementById(id);
+}
+
 function togglePlay(btn, note) {
   if (audioPlayers[note]) {
-    // إذا كان الصوت يعمل، نوقفه
-    if (!audioPlayers[note].paused) {
+    if (!audioPlayers[note][_0x5bde[1]]) {  // "paused"
       audioPlayers[note].pause();
-      audioPlayers[note].currentTime = 0;
-      btn.innerText = "▶";
+      audioPlayers[note][_0x5bde[2]] = 0;      // "currentTime"
+      btn[_0x5bde[3]] = _0x5bde[4];            // "innerText" = "▶"
     } else {
-      // إذا كان متوقفًا، نشغله
       audioPlayers[note].play();
-      btn.innerText = "■";
+      btn[_0x5bde[3]] = _0x5bde[5];            // "innerText" = "■"
     }
   } else {
-    // إنشاء كائن صوت جديد وتشغيله
-    let audio = new Audio(noteAudioMapping[note]);
+    var audio = new Audio(noteAudioMapping[note]);
     audioPlayers[note] = audio;
     audio.play();
-    btn.innerText = "■";
-    // عند انتهاء التشغيل، استعادة رمز التشغيل
-    audio.onended = function() {
-      btn.innerText = "▶";
+    btn[_0x5bde[3]] = _0x5bde[5];
+    audio.onended = function () {
+      btn[_0x5bde[3]] = _0x5bde[4];
     };
   }
 }
 
-// عرض السلم المقامي مع البطاقات وزر تبديل التشغيل لكل نغمة
 function showScale() {
-  const selectedScale = document.getElementById("scaleSelect").value;
-  const scaleResultDiv = document.getElementById("scaleResult");
-  const scaleString = scales[selectedScale] || "السلم غير متوفر";
-  const notes = scaleString.split(" - ");
-  
-  let html = `<div class="scale-grid">`;
-  notes.forEach((note, index) => {
-    html += `
-      <div class="scale-card">
-        <div class="note-index">${index + 1}</div>
-        <div class="note-name">${note}</div>
-        <button class="play-note" onclick="togglePlay(this, '${note}')">▶</button>
-      </div>`;
-    if (index < notes.length - 1) {
-      html += `<div class="scale-arrow">→</div>`;
+  var scaleVal = _0x2d7e("scaleSelect").value,
+      scaleDiv = _0x2d7e("scaleResult"),
+      scaleStr = scales[scaleVal] || "السلم غير متوفر",
+      notesArr = scaleStr[_0x5bde[6]](_0x5bde[7]); // "split" on " - "
+  var html = "<div class=\"scale-grid\">";
+  notesArr.forEach(function(note, idx) {
+    html += "<div class=\"scale-card\"><div class=\"note-index\">" + (idx + 1) + "</div><div class=\"note-name\">" + note + "</div><button class=\"play-note\" onclick=\"togglePlay(this, '" + note + "')\">" + _0x5bde[4] + "</button></div>";
+    if (idx < notesArr.length - 1) {
+      html += "<div class=\"scale-arrow\">→</div>";
     }
   });
-  html += `</div>`;
-  scaleResultDiv.innerHTML = html;
+  html += "</div>";
+  scaleDiv.innerHTML = html;
 }
 
-// تبديل علامات التبويب
 function showTab(tabName) {
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(tabName).classList.add('active');
-  document.querySelector(`button[onclick="showTab('${tabName}')"]`).classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(function(el) {
+    el.classList.remove("active");
+  });
+  document.querySelectorAll('.tab-button').forEach(function(el) {
+    el.classList.remove("active");
+  });
+  _0x2d7e(tabName).classList.add("active");
+  document.querySelector("button[onclick=\"showTab('" + tabName + "')\"]").classList.add("active");
 }
 
-// تمييز الحقول الخاطئة
-function validateInput(inputId) {
-  const input = document.getElementById(inputId);
-  if (!input.value || parseFloat(input.value) <= 0) {
-    input.classList.add('error');
+function validateInput(id) {
+  var inp = _0x2d7e(id);
+  if (!inp.value || parseFloat(inp.value) <= 0) {
+    inp.classList.add("error");
     return false;
   } else {
-    input.classList.remove('error');
+    inp.classList.remove("error");
     return true;
   }
 }
 
-// وظيفة لحساب الناي
 function calculateAll() {
   if (!validateInput("length")) {
     alert("الرجاء إدخال طول صحيح للناي!");
     return;
   }
-  const totalLength = parseFloat(document.getElementById("length").value);
-
-  // نسب الثقوب الأصلية
-  const holePositionsRatios = [7.3 / 53, 9.7 / 53, 12.1 / 53, 16.9 / 53, 19.3 / 53, 21.5 / 53, 0.5];
-  const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
-
-  // إنشاء جداول النتائج
-  let resultHTML = `
-    <div class="result-table">
-      <table>
-        <thead>
-          <tr><th colspan="2">أماكن الثقوب</th></tr>
-          <tr><th>الثقب</th><th>المسافة (سم)</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
-          <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
-          <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
-          <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
-          <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
-          <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
-          <tr><td>الثقب السابع (الخلفي)</td><td>${holes[6]}</td></tr>
-        </tbody>
-      </table>
-      <table>
-        <thead>
-          <tr><th colspan="2">أطوال الفكوك</th></tr>
-          <tr><th>الفك</th><th>الطول (سم)</th></tr>
-        </thead>
-        <tbody>
-  `;
-
-  // الحساب بالنسبة للطول الأصلي 59.2 سم وأطوال الفكوك الأصلية
-  const originalNaiLength = 59.2;
-  const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
-  const ratio = totalLength / originalNaiLength;
-  const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
-  const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "الفك الخامس", "الفك السادس", "الفك السابع", "الفك الثامن", "الخزنة"];
-
-  newFukuk.forEach((length, index) => {
-    resultHTML += `<tr><td>${fukukNames[index]}</td><td>${length}</td></tr>`;
+  var totalLength = parseFloat(_0x2d7e("length").value),
+      ratios = [7.3/53, 9.7/53, 12.1/53, 16.9/53, 19.3/53, 21.5/53, 0.5],
+      holes = ratios.map(function(ratio) { return (ratio * totalLength).toFixed(2); });
+  var resHTML = "<div class=\"result-table\"><table><thead><tr><th colspan=\"2\">أماكن الثقوب</th></tr><tr><th>الثقب</th><th>المسافة (سم)</th></tr></thead><tbody>" +
+      "<tr><td>الثقب الأول</td><td>" + holes[0] + "</td></tr>" +
+      "<tr><td>الثقب الثاني</td><td>" + holes[1] + "</td></tr>" +
+      "<tr><td>الثقب الثالث</td><td>" + holes[2] + "</td></tr>" +
+      "<tr><td>الثقب الرابع</td><td>" + holes[3] + "</td></tr>" +
+      "<tr><td>الثقب الخامس</td><td>" + holes[4] + "</td></tr>" +
+      "<tr><td>الثقب السادس</td><td>" + holes[5] + "</td></tr>" +
+      "<tr><td>الثقب السابع (الخلفي)</td><td>" + holes[6] + "</td></tr>" +
+      "</tbody></table>";
+  var originalLength = 59.2,
+      fukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9],
+      factor = totalLength / originalLength,
+      newFukuk = fukuk.map(function(val) { return (val * factor).toFixed(2); }),
+      fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "الفك الخامس", "الفك السادس", "الفك السابع", "الفك الثامن", "الخزنة"];
+  resHTML += "<table><thead><tr><th colspan=\"2\">أطوال الفكوك</th></tr><tr><th>الفك</th><th>الطول (سم)</th></tr></thead><tbody>";
+  newFukuk.forEach(function(val, idx) {
+    resHTML += "<tr><td>" + fukukNames[idx] + "</td><td>" + val + "</td></tr>";
   });
-
-  resultHTML += `
-        </tbody>
-      </table>
-    </div>
-    <button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>
-  `;
-  document.getElementById("naiResults").innerHTML = resultHTML;
+  resHTML += "</tbody></table></div><button class=\"copy-button\" onclick=\"copyResult('naiResults')\">نسخ النتائج</button>";
+  _0x2d7e("naiResults").innerHTML = resHTML;
 }
 
-// حساب قطر الرداد
 function calculateRadadDiameter() {
   if (!validateInput("khaznaDiameter")) {
     alert("الرجاء إدخال قطر خزنة صحيح!");
     return;
   }
-  const khaznaDiameter = parseFloat(document.getElementById("khaznaDiameter").value);
-  const radadDiameter = (khaznaDiameter - (khaznaDiameter * 0.191)).toFixed(2);
-  document.getElementById("radadResult").innerHTML = `<p>قطر الرداد: ${radadDiameter} سم</p>
-    <button class="copy-button" onclick="copyResult('radadResult')">نسخ النتيجة</button>`;
+  var diam = parseFloat(_0x2d7e("khaznaDiameter").value),
+      radad = (diam - (diam * 0.191)).toFixed(2);
+  _0x2d7e("radadResult").innerHTML = "<p>قطر الرداد: " + radad + " سم</p><button class=\"copy-button\" onclick=\"copyResult('radadResult')\">نسخ النتيجة</button>";
 }
 
-// حساب الكولة
 function calculateKawala() {
   if (!validateInput("totalLength")) {
     alert("الرجاء إدخال طول الكولة!");
     return;
   }
-  const totalLength = parseFloat(document.getElementById("totalLength").value);
-
-  // نسب الفكوك للكولة
-  const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
-  const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
-  const jawLengths = jawRatios.map(ratio => (ratio / sumJawRatios) * totalLength);
-
-  // نسب الثقوب للكولة
-  const holePositionsRatios = [8.6 / 56, 12.9 / 56, 17.2 / 56, 23.5 / 56, 27.8 / 56, 32.1 / 56];
-  const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
-
-  let resultHTML = `
-    <div class="result-table">
-      <table>
-        <thead>
-          <tr><th colspan="2">أماكن الثقوب</th></tr>
-          <tr><th>الثقب</th><th>المسافة (سم)</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
-          <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
-          <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
-          <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
-          <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
-          <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
-        </tbody>
-      </table>
-      <table>
-        <thead>
-          <tr><th colspan="2">أطوال الفكوك</th></tr>
-          <tr><th>الفك</th><th>الطول (سم)</th></tr>
-        </thead>
-        <tbody>
-  `;
-  const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "فك الخزنة"];
-  jawLengths.forEach((length, index) => {
-    resultHTML += `<tr><td>${fukukNames[index]}</td><td>${length.toFixed(2)}</td></tr>`;
+  var total = parseFloat(_0x2d7e("totalLength").value),
+      jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6],
+      sumJaw = jawRatios.reduce(function(a, b){ return a + b; }, 0),
+      jawLengths = jawRatios.map(function(ratio){ return (ratio/sumJaw) * total; }),
+      holeRatios = [8.6/56, 12.9/56, 17.2/56, 23.5/56, 27.8/56, 32.1/56],
+      holes = holeRatios.map(function(r){ return (r * total).toFixed(2); });
+  var resHTML = "<div class=\"result-table\"><table><thead><tr><th colspan=\"2\">أماكن الثقوب</th></tr><tr><th>الثقب</th><th>المسافة (سم)</th></tr></thead><tbody>" +
+      "<tr><td>الثقب الأول</td><td>" + holes[0] + "</td></tr>" +
+      "<tr><td>الثقب الثاني</td><td>" + holes[1] + "</td></tr>" +
+      "<tr><td>الثقب الثالث</td><td>" + holes[2] + "</td></tr>" +
+      "<tr><td>الثقب الرابع</td><td>" + holes[3] + "</td></tr>" +
+      "<tr><td>الثقب الخامس</td><td>" + holes[4] + "</td></tr>" +
+      "<tr><td>الثقب السادس</td><td>" + holes[5] + "</td></tr>" +
+      "</tbody></table>";
+  var origLen = 59.2,
+      fukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9],
+      factor = total / origLen,
+      newFukuk = fukuk.map(function(val){ return (val * factor).toFixed(2); }),
+      names = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "الفك الخامس", "الفك السادس", "الفك السابع", "الفك الثامن", "الخزنة"];
+  resHTML += "<table><thead><tr><th colspan=\"2\">أطوال الفكوك</th></tr><tr><th>الفك</th><th>الطول (سم)</th></tr></thead><tbody>";
+  newFukuk.forEach(function(val, idx){
+    resHTML += "<tr><td>" + names[idx] + "</td><td>" + val + "</td></tr>";
   });
-  resultHTML += `
-        </tbody>
-      </table>
-    </div>
-    <button class="copy-button" onclick="copyResult('kawalaResults')">نسخ النتائج</button>
-  `;
-  document.getElementById("kawalaResults").innerHTML = resultHTML;
+  resHTML += "</tbody></table></div><button class=\"copy-button\" onclick=\"copyResult('kawalaResults')\">نسخ النتائج</button>";
+  _0x2d7e("kawalaResults").innerHTML = resHTML;
 }
 
-// زر نسخ النتائج إلى الحافظة
-function copyResult(sectionId) {
-  const section = document.getElementById(sectionId);
-  const range = document.createRange();
-  range.selectNode(section);
+function copyResult(id) {
+  var el = _0x2d7e(id);
+  var range = document.createRange();
+  range.selectNode(el);
   window.getSelection().removeAllRanges();
   window.getSelection().addRange(range);
   try {
-    document.execCommand('copy');
-    alert('تم نسخ النتائج إلى الحافظة');
+    document.execCommand("copy");
+    alert("تم نسخ النتائج إلى الحافظة");
   } catch (err) {
-    alert('تعذر نسخ النتائج');
+    alert("تعذر نسخ النتائج");
   }
   window.getSelection().removeAllRanges();
 }
 
-// وظائف إعادة التعيين لمسح المدخلات والنتائج لكل قسم
-function resetSection(sectionId) {
-  if (sectionId === 'nai') {
-    document.getElementById("length").value = "";
-    document.getElementById("naiResults").innerHTML = "";
-    document.getElementById("khaznaDiameter").value = "";
-    document.getElementById("radadResult").innerHTML = "";
+function resetSection(section) {
+  if (section === "nai") {
+    _0x2d7e("length").value = "";
+    _0x2d7e("naiResults").innerHTML = "";
+    _0x2d7e("khaznaDiameter").value = "";
+    _0x2d7e("radadResult").innerHTML = "";
     removeError("length");
     removeError("khaznaDiameter");
-  } else if (sectionId === 'kawala') {
-    document.getElementById("totalLength").value = "";
-    document.getElementById("kawalaResults").innerHTML = "";
+  } else if (section === "kawala") {
+    _0x2d7e("totalLength").value = "";
+    _0x2d7e("kawalaResults").innerHTML = "";
     removeError("totalLength");
   }
 }
 
-function resetInput(inputId, resultId) {
-  document.getElementById(inputId).value = "";
-  document.getElementById(resultId).innerHTML = "";
-  removeError(inputId);
+function resetInput(inpId, resId) {
+  _0x2d7e(inpId).value = "";
+  _0x2d7e(resId).innerHTML = "";
+  removeError(inpId);
 }
 
-function removeError(inputId) {
-  document.getElementById(inputId).classList.remove('error');
+function removeError(id) {
+  _0x2d7e(id).classList.remove("error");
 }
 
-// إظهار الفوتر بعد تحميل الصفحة
 document.addEventListener("DOMContentLoaded", function() {
-  setTimeout(() => {
-    document.querySelector('.footer').classList.add('show');
+  setTimeout(function() {
+    document.querySelector(".footer").classList.add("show");
   }, 1000);
 });
