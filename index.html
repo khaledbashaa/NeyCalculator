@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -422,6 +420,10 @@
     // كائن لتخزين عناصر الصوت لتفعيل خاصية التبديل (تشغيل/إيقاف)
     var audioPlayers = {};
 
+    // متغيرات لتتبع النغمة المشغلة حالياً وزر التشغيل الخاص بها
+    var currentPlaying = null;
+    var currentButton = null;
+
     // بيانات سلالم المقامات
     const scales = {
       "دو": "دو - ري - مي نصف بيمول - فا - صول - لا - سي نصف بيمول - دو",
@@ -441,7 +443,6 @@
     };
 
     // تحديث كائن ربط أسماء النغمات بروابط الأصوات
-    // يرجى استبدال YOUR_FILE_ID_XXX بالمعرف الصحيح أو الرابط المباشر لكل نغمة
     const noteAudioMapping = {
       "دو": "https://dl.dropboxusercontent.com/scl/fi/ody6hdacpjd31kxm37cbc/.mp3?rlkey=r74goqb6l6ll07ham3pytufkp",
       "دو دييز": "https://dl.dropboxusercontent.com/scl/fi/sbiblojbrx9hnvxmfqk18/.mp3?rlkey=ey7yp6k60402fje5r49bx8qvf",
@@ -477,31 +478,40 @@
 
     // دالة تبديل تشغيل/إيقاف الصوت باستخدام زر (تمرير العنصر والنغمة)
     function togglePlay(btn, note) {
-      if (audioPlayers[note]) {
-        // إذا كان الصوت يعمل، نوقفه
-        if (!audioPlayers[note].paused) {
-          audioPlayers[note].pause();
-          audioPlayers[note].currentTime = 0;
-          btn.innerText = "▶";
-        } else {
-          // إذا كان متوقفًا، نشغله
-          audioPlayers[note].play();
-          btn.innerText = "■";
-        }
+      // إذا كانت النغمة المطلوبة هي النغمة التي تعمل حالياً، قم بإيقافها
+      if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
+        audioPlayers[note].pause();
+        audioPlayers[note].currentTime = 0;
+        btn.innerText = "▶";
+        currentPlaying = null;
+        currentButton = null;
       } else {
-        // إنشاء كائن صوت جديد وتشغيله
-        let audio = new Audio(noteAudioMapping[note]);
-        audioPlayers[note] = audio;
-        audio.play();
+        // إذا كانت هناك نغمة أخرى تعمل، قم بإيقافها وتحديث رمز زرها
+        if (currentPlaying && audioPlayers[currentPlaying] && !audioPlayers[currentPlaying].paused) {
+          audioPlayers[currentPlaying].pause();
+          audioPlayers[currentPlaying].currentTime = 0;
+          if (currentButton) {
+            currentButton.innerText = "▶";
+          }
+        }
+        // تشغيل النغمة المطلوبة
+        if (!audioPlayers[note]) {
+          audioPlayers[note] = new Audio(noteAudioMapping[note]);
+        }
+        audioPlayers[note].play();
         btn.innerText = "■";
-        // عند انتهاء التشغيل، استعادة رمز التشغيل
-        audio.onended = function() {
+        currentPlaying = note;
+        currentButton = btn;
+        // عند انتهاء تشغيل النغمة، استعادة رمز التشغيل وإعادة تعيين المتغيرات
+        audioPlayers[note].onended = function() {
           btn.innerText = "▶";
+          currentPlaying = null;
+          currentButton = null;
         };
       }
     }
 
-    // عرض السلم المقامي مع البطاقات وزر تبديل التشغيل لكل نغمة
+    // عرض السلم المقامي مع البطاقات وزر تشغيل الصوت لكل نغمة
     function showScale() {
       const selectedScale = document.getElementById("scaleSelect").value;
       const scaleResultDiv = document.getElementById("scaleResult");
