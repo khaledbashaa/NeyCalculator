@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تطبيق صناعة الناي والكولة - تسجيل فيديو/صوت</title>
+  <title>تطبيق صناعة الناي والكولة</title>
   <style>
     /* إعداد متغيرات الألوان */
     :root {
@@ -15,12 +15,14 @@
       --hover-bg: #e6c200;
       --active-bg: #d4af37;
     }
+
     /* إعادة تعيين الأنماط الأساسية */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(45deg, #000, #222, #444, #000);
@@ -34,11 +36,13 @@
       padding: 20px;
       direction: rtl;
     }
+
     @keyframes gradientBG {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+
     .container {
       background-color: var(--main-bg);
       padding: 20px;
@@ -48,10 +52,18 @@
       max-width: 1000px;
       animation: fadeInUp 1s ease-out;
     }
+
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     .tabs {
       display: flex;
       justify-content: center;
@@ -59,6 +71,7 @@
       flex-wrap: wrap;
       gap: 10px;
     }
+
     .tab-button {
       background-color: var(--input-bg);
       color: var(--text-color);
@@ -69,14 +82,17 @@
       border-radius: 5px;
       transition: background 0.3s ease;
     }
+
     .tab-button.active {
       background-color: var(--accent);
       color: #000;
     }
+
     .tab-button:hover {
       background-color: var(--hover-bg);
       animation: shake 0.5s ease-in-out;
     }
+
     @keyframes shake {
       0% { transform: translateX(0); }
       25% { transform: translateX(-5px); }
@@ -84,29 +100,35 @@
       75% { transform: translateX(-5px); }
       100% { transform: translateX(0); }
     }
+
     .tab-content {
       display: none;
       animation: fadeInUp 0.5s ease-out;
     }
+
     .tab-content.active {
       display: block;
     }
+
     .section-header {
       font-size: 22px;
       margin-bottom: 10px;
       color: var(--accent);
       text-align: center;
     }
+
     label {
       font-size: 16px;
       margin-bottom: 5px;
       display: block;
     }
+
     .tooltip {
       font-size: 14px;
       color: #aaa;
       margin-bottom: 10px;
     }
+
     input[type="number"],
     select {
       width: 100%;
@@ -119,17 +141,20 @@
       transition: background-color 0.3s ease, border 0.3s ease;
       margin-bottom: 15px;
     }
+
     input[type="number"]:focus,
     select:focus {
       background-color: #444;
       border-color: var(--accent);
       outline: none;
     }
+
     .button-group {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     button {
       background-color: var(--accent);
       color: #000;
@@ -142,21 +167,28 @@
       flex: 1;
       min-width: 120px;
     }
+
     button:hover {
       background-color: var(--hover-bg);
       transform: scale(1.05);
     }
+
     button:active {
       transform: scale(0.95);
       background-color: var(--active-bg);
     }
-    .result-section { margin-top: 20px; }
+
+    .result-section {
+      margin-top: 20px;
+    }
+
     .result-table {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       margin-top: 15px;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -164,17 +196,24 @@
       border-radius: 10px;
       overflow: hidden;
     }
+
     th, td {
       padding: 10px;
       text-align: center;
       border: 1px solid #444;
     }
+
     th {
       background-color: #444;
       font-size: 18px;
       color: var(--accent);
     }
-    td { font-size: 16px; color: var(--text-color); }
+
+    td {
+      font-size: 16px;
+      color: var(--text-color);
+    }
+
     .copy-button {
       background-color: #555;
       color: var(--accent);
@@ -185,23 +224,15 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    .copy-button:hover { background-color: #666; }
-    .error { border-color: red !important; }
-    /* قسم التسجيل يظهر فقط في تبويب "مقام الراست" */
-    #recordingSection {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #444;
-      text-align: center;
-      display: none;
+
+    .copy-button:hover {
+      background-color: #666;
     }
-    #recordingSection button { margin: 5px; min-width: 150px; }
-    #recordingSection video,
-    #recordingSection audio {
-      margin-top: 10px;
-      border: 1px solid #444;
-      border-radius: 5px;
+
+    .error {
+      border-color: red !important;
     }
+
     .footer {
       margin-top: 30px;
       font-size: 14px;
@@ -211,20 +242,31 @@
       transform: translateY(20px);
       transition: opacity 1s ease, transform 1s ease;
     }
+
     .footer.show {
       opacity: 1;
       transform: translateY(0);
     }
+
     .footer a {
       color: var(--accent);
       text-decoration: none;
     }
-    .footer a:hover { text-decoration: underline; }
-    @media (max-width: 768px) {
-      .result-table { grid-template-columns: 1fr; }
-      .button-group { flex-direction: column; }
+
+    .footer a:hover {
+      text-decoration: underline;
     }
-    /* قسم السلم المقامي */
+
+    @media (max-width: 768px) {
+      .result-table {
+        grid-template-columns: 1fr;
+      }
+      .button-group {
+        flex-direction: column;
+      }
+    }
+
+    /* تنسيق مخصص لقسم السلم المقامي */
     .scale-selection {
       display: flex;
       justify-content: center;
@@ -233,8 +275,17 @@
       flex-wrap: wrap;
       margin-top: 10px;
     }
-    .scale-btn { padding: 10px 15px; font-size: 16px; }
-    .scale-result { margin-top: 20px; }
+
+    .scale-btn {
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+
+    .scale-result {
+      margin-top: 20px;
+    }
+
+    /* تصميم شبكة البطاقات لعرض النغمات */
     .scale-grid {
       display: flex;
       flex-wrap: wrap;
@@ -243,6 +294,7 @@
       gap: 10px;
       margin-top: 20px;
     }
+
     .scale-card {
       background-color: var(--input-bg);
       padding: 10px 15px;
@@ -252,12 +304,18 @@
       min-width: 80px;
       transition: transform 0.3s ease;
     }
-    .scale-card:hover { transform: scale(1.05); }
+
+    .scale-card:hover {
+      transform: scale(1.05);
+    }
+
     .scale-arrow {
       font-size: 24px;
       color: var(--accent);
       align-self: center;
     }
+    
+    /* زر تشغيل وإيقاف الصوت لكل نغمة (تبديل) */
     .play-note {
       margin-top: 5px;
       background-color: var(--accent);
@@ -268,7 +326,10 @@
       cursor: pointer;
       font-size: 14px;
     }
-    .play-note:hover { background-color: var(--hover-bg); }
+    
+    .play-note:hover {
+      background-color: var(--hover-bg);
+    }
   </style>
 </head>
 <body>
@@ -276,7 +337,7 @@
     <div class="tabs">
       <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
       <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
-      <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
+      <button class="tab-button" onclick="showTab('scale')"> مقام الراست من كل الدرجات</button>
     </div>
 
     <!-- قسم صناعة الناي -->
@@ -335,31 +396,12 @@
           <option value="لا">لا</option>
           <option value="سي بيمول">سي بيمول</option>
           <option value="سي">سي</option>
+          <!-- خيار علامات الثلاث ارباع -->
           <option value="علامات الثلاث ارباع">علامات الثلاث ارباع</option>
         </select>
         <button onclick="showScale()" class="tab-button scale-btn">عرض السلم</button>
       </div>
       <div id="scaleResult" class="result-section scale-result"></div>
-
-      <!-- قسم التسجيل يظهر فقط في هذا التبويب -->
-      <div id="recordingSection">
-        <div class="section-header">التسجيل</div>
-        <div>
-          <button id="startVideoRecord" onclick="startVideoRecording()">تسجيل فيديو</button>
-          <button id="stopVideoRecord" onclick="stopVideoRecording()" disabled>إيقاف تسجيل الفيديو</button>
-        </div>
-        <video id="videoPreview" autoplay playsinline style="width:100%; max-width:400px; display:none;"></video>
-        <br>
-        <a id="videoDownloadLink" style="display:none;">تحميل الفيديو</a>
-        <hr style="margin:20px 0; border: 1px solid #444;">
-        <div>
-          <button id="startAudioRecord" onclick="startAudioRecording()">تسجيل صوت</button>
-          <button id="stopAudioRecord" onclick="stopAudioRecording()" disabled>إيقاف تسجيل الصوت</button>
-        </div>
-        <audio id="audioPreview" controls style="display:none; width:100%; max-width:400px;"></audio>
-        <br>
-        <a id="audioDownloadLink" style="display:none;">تحميل التسجيل الصوتي</a>
-      </div>
     </div>
 
     <div class="footer">
@@ -375,16 +417,14 @@
   </div>
 
   <script>
-    // ---------------------- الجزء المتعلق بالصوت والنغمات ----------------------
+    // كائن لتخزين عناصر الصوت لتفعيل خاصية التبديل (تشغيل/إيقاف)
     var audioPlayers = {};
+
+    // متغيرات لتتبع النغمة المشغلة حالياً وزر التشغيل الخاص بها
     var currentPlaying = null;
     var currentButton = null;
-    // Global AudioContext يُنشأ عند الحاجة
-    var globalAudioContext = null;
-    // المتغير الذي يحمل مصدر صوت النغمة (MediaElementAudioSourceNode)
-    var currentToneSource = null;
 
-    // بيانات سلالم المقامات وروابط الأصوات (نفسها كما في النسخة السابقة)
+    // بيانات سلالم المقامات
     const scales = {
       "دو": "دو - ري - مي نصف بيمول - فا - صول - لا - سي نصف بيمول - دو",
       "ري بيمول": "ري بيمول - مي بيمول - فا نصف بيمول - صول بيمول - لا بيمول - سي بيمول - دو نصف بيمول - ري بيمول",
@@ -398,9 +438,11 @@
       "لا": "لا - سي - دو نصف دييز - ري - مي - فا دييز - صول نصف دييز - لا",
       "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف بيمول - سي بيمول",
       "سي": "سي - دو دييز - ري نصف دييز - مي - فا دييز - صول دييز - لا نصف دييز - سي",
-      "علامات الثلاث ارباع": "ري نصف بيمول - دو نصف دييز - مي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
+      // خيار علامات الثلاث ارباع مع العلامات المطلوبة
+      "سلم موسيقي كامل": "ري نصف بيمول - دو نصف دييز - مي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
     };
 
+    // تحديث كائن ربط أسماء النغمات بروابط الأصوات
     const noteAudioMapping = {
       "دو": "https://dl.dropboxusercontent.com/scl/fi/ody6hdacpjd31kxm37cbc/.mp3?rlkey=r74goqb6l6ll07ham3pytufkp",
       "دو دييز": "https://dl.dropboxusercontent.com/scl/fi/sbiblojbrx9hnvxmfqk18/.mp3?rlkey=ey7yp6k60402fje5r49bx8qvf",
@@ -434,94 +476,73 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
-    // دالة تبديل تشغيل/إيقاف الصوت مع استخدام Web Audio API
+    // دالة تبديل تشغيل/إيقاف الصوت باستخدام زر (تمرير العنصر والنغمة)
     function togglePlay(btn, note) {
-      // إذا كانت النغمة قيد التشغيل بالفعل، قم بإيقافها وإعادة تهيئة المصدر
+      // إذا كانت النغمة المطلوبة هي النغمة التي تعمل حالياً، قم بإيقافها
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
         audioPlayers[note].pause();
         audioPlayers[note].currentTime = 0;
-        if (currentToneSource) {
-          try { currentToneSource.disconnect(); } catch(e) { console.error(e); }
-          currentToneSource = null;
-        }
         btn.innerText = "▶";
         currentPlaying = null;
         currentButton = null;
       } else {
-        // إذا كانت هناك نغمة أخرى تعمل، أوقفها
+        // إذا كانت هناك نغمة أخرى تعمل، قم بإيقافها وتحديث رمز زرها
         if (currentPlaying && audioPlayers[currentPlaying] && !audioPlayers[currentPlaying].paused) {
           audioPlayers[currentPlaying].pause();
           audioPlayers[currentPlaying].currentTime = 0;
-          if (currentToneSource) {
-            try { currentToneSource.disconnect(); } catch(e) { console.error(e); }
-            currentToneSource = null;
+          if (currentButton) {
+            currentButton.innerText = "▶";
           }
-          if (currentButton) { currentButton.innerText = "▶"; }
         }
-        // إنشاء AudioContext إذا لم يكن موجوداً، واستئنافه إذا كان معلقاً
-        if (!globalAudioContext) {
-          globalAudioContext = new AudioContext();
-        }
-        if (globalAudioContext.state === "suspended") {
-          globalAudioContext.resume();
-        }
-        // التأكد من وجود العنصر الصوتي للنغمة
+        // تشغيل النغمة المطلوبة
         if (!audioPlayers[note]) {
           audioPlayers[note] = new Audio(noteAudioMapping[note]);
-        }
-        // يُمكنك تعديل الخاصية التالية (muted) إذا كان ذلك يمنع ظهور الصوت؛ في بعض الأجهزة قد تحتاج لإزالة هذه الخاصية
-        audioPlayers[note].muted = true;
-        try {
-          if (currentToneSource) { currentToneSource.disconnect(); }
-          currentToneSource = globalAudioContext.createMediaElementSource(audioPlayers[note]);
-          // نوصّل المصدر إلى وجهة الصوت (يمكنك تعديل هذا إذا أردت عدم سماع النغمة مباشرة)
-          currentToneSource.connect(globalAudioContext.destination);
-        } catch(e) {
-          console.error("خطأ في إنشاء مصدر النغمة:", e);
         }
         audioPlayers[note].play();
         btn.innerText = "■";
         currentPlaying = note;
         currentButton = btn;
+        // عند انتهاء تشغيل النغمة، استعادة رمز التشغيل وإعادة تعيين المتغيرات
+        audioPlayers[note].onended = function() {
+          btn.innerText = "▶";
+          currentPlaying = null;
+          currentButton = null;
+        };
       }
     }
 
-    // عرض السلم المقامي مع البطاقات وأزرار تشغيل النغمات
+    // عرض السلم المقامي مع البطاقات وزر تشغيل الصوت لكل نغمة
     function showScale() {
       const selectedScale = document.getElementById("scaleSelect").value;
       const scaleResultDiv = document.getElementById("scaleResult");
       const scaleString = scales[selectedScale] || "السلم غير متوفر";
       const notes = scaleString.split(" - ");
-      let html = `<div class="scale-grid">`;
+      
+      let html = <div class="scale-grid">;
       notes.forEach((note, index) => {
-        html += `
+        html += 
           <div class="scale-card">
             <div class="note-index">${index + 1}</div>
             <div class="note-name">${note}</div>
             <button class="play-note" onclick="togglePlay(this, '${note}')">▶</button>
-          </div>`;
+          </div>;
         if (index < notes.length - 1) {
-          html += `<div class="scale-arrow">→</div>`;
+          html += <div class="scale-arrow">→</div>;
         }
       });
-      html += `</div>`;
+      html += </div>;
       scaleResultDiv.innerHTML = html;
     }
 
-    // تبديل علامات التبويب وإظهار قسم التسجيل فقط في تبويب "مقام الراست"
+    // تبديل علامات التبويب
     function showTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
-      document.querySelector(`button[onclick="showTab('${tabName}')"]`).classList.add('active');
-      if(tabName === 'scale'){
-        document.getElementById('recordingSection').style.display = 'block';
-      } else {
-        document.getElementById('recordingSection').style.display = 'none';
-      }
+      document.querySelector(button[onclick="showTab('${tabName}')"]).classList.add('active');
     }
 
-    // دوال التحقق من المدخلات (لحساب الناي والكولة) تبقى كما هي...
+    // تمييز الحقول الخاطئة
     function validateInput(inputId) {
       const input = document.getElementById(inputId);
       if (!input.value || parseFloat(input.value) <= 0) {
@@ -532,125 +553,170 @@
         return true;
       }
     }
-    // (يمكنك استخدام نفس دوال حساب الناي، حساب الرداد، حساب الكولة، نسخ النتائج، وإعادة التعيين كما في النسخة الأصلية)
 
-    // ---------------------- الجزء الخاص بالتسجيل (فيديو وصوت) ----------------------
-    var mediaRecorderVideo;
-    var recordedChunksVideo = [];
-    var mediaRecorderAudio;
-    var recordedChunksAudio = [];
+    // وظيفة لحساب الناي
+    function calculateAll() {
+      if (!validateInput("length")) {
+        alert("الرجاء إدخال طول صحيح للناي!");
+        return;
+      }
+      const totalLength = parseFloat(document.getElementById("length").value);
 
-    // بدء تسجيل الفيديو مع دمج صوت المايك والنغمة
-    async function startVideoRecording() {
+      // نسب الثقوب الأصلية
+      const holePositionsRatios = [7.3 / 53, 9.7 / 53, 12.1 / 53, 16.9 / 53, 19.3 / 53, 21.5 / 53, 0.5];
+      const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
+
+      // إنشاء جداول النتائج
+      let resultHTML = 
+        <div class="result-table">
+          <table>
+            <thead>
+              <tr><th colspan="2">أماكن الثقوب</th></tr>
+              <tr><th>الثقب</th><th>المسافة (سم)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
+              <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
+              <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
+              <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
+              <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
+              <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
+              <tr><td>الثقب السابع (الخلفي)</td><td>${holes[6]}</td></tr>
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <tr><th colspan="2">أطوال الفكوك</th></tr>
+              <tr><th>الفك</th><th>الطول (سم)</th></tr>
+            </thead>
+            <tbody>
+      ;
+
+      // الحساب بالنسبة للطول الأصلي 59.2 سم وأطوال الفكوك الأصلية
+      const originalNaiLength = 59.2;
+      const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
+      const ratio = totalLength / originalNaiLength;
+      const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
+      const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "الفك الخامس", "الفك السادس", "الفك السابع", "الفك الثامن", "الخزنة"];
+
+      newFukuk.forEach((length, index) => {
+        resultHTML += <tr><td>${fukukNames[index]}</td><td>${length}</td></tr>;
+      });
+
+      resultHTML += 
+            </tbody>
+          </table>
+        </div>
+        <button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>
+      ;
+      document.getElementById("naiResults").innerHTML = resultHTML;
+    }
+
+    // حساب قطر الرداد
+    function calculateRadadDiameter() {
+      if (!validateInput("khaznaDiameter")) {
+        alert("الرجاء إدخال قطر خزنة صحيح!");
+        return;
+      }
+      const khaznaDiameter = parseFloat(document.getElementById("khaznaDiameter").value);
+      const radadDiameter = (khaznaDiameter - (khaznaDiameter * 0.191)).toFixed(2);
+      document.getElementById("radadResult").innerHTML = <p>قطر الرداد: ${radadDiameter} سم</p>
+        <button class="copy-button" onclick="copyResult('radadResult')">نسخ النتيجة</button>;
+    }
+
+    // حساب الكولة
+    function calculateKawala() {
+      if (!validateInput("totalLength")) {
+        alert("الرجاء إدخال طول الكولة!");
+        return;
+      }
+      const totalLength = parseFloat(document.getElementById("totalLength").value);
+
+      // نسب الفكوك للكولة
+      const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
+      const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
+      const jawLengths = jawRatios.map(ratio => (ratio / sumJawRatios) * totalLength);
+
+      // نسب الثقوب للكولة
+      const holePositionsRatios = [8.6 / 56, 12.9 / 56, 17.2 / 56, 23.5 / 56, 27.8 / 56, 32.1 / 56];
+      const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
+
+      let resultHTML = 
+        <div class="result-table">
+          <table>
+            <thead>
+              <tr><th colspan="2">أماكن الثقوب</th></tr>
+              <tr><th>الثقب</th><th>المسافة (سم)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
+              <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
+              <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
+              <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
+              <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
+              <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <tr><th colspan="2">أطوال الفكوك</th></tr>
+              <tr><th>الفك</th><th>الطول (سم)</th></tr>
+            </thead>
+            <tbody>
+      ;
+      const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "فك الخزنة"];
+      jawLengths.forEach((length, index) => {
+        resultHTML += <tr><td>${fukukNames[index]}</td><td>${length.toFixed(2)}</td></tr>;
+      });
+      resultHTML += 
+            </tbody>
+          </table>
+        </div>
+        <button class="copy-button" onclick="copyResult('kawalaResults')">نسخ النتائج</button>
+      ;
+      document.getElementById("kawalaResults").innerHTML = resultHTML;
+    }
+
+    // زر نسخ النتائج إلى الحافظة
+    function copyResult(sectionId) {
+      const section = document.getElementById(sectionId);
+      const range = document.createRange();
+      range.selectNode(section);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
       try {
-        if (!globalAudioContext) { globalAudioContext = new AudioContext(); }
-        // الحصول على تيار المايكروفون والفيديو
-        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        // إنشاء مصدر صوت من المايكروفون وتوصيله إلى وجهة التسجيل
-        const micSource = globalAudioContext.createMediaStreamSource(micStream);
-        const recordingDestination = globalAudioContext.createMediaStreamDestination();
-        micSource.connect(recordingDestination);
-        // إذا كانت نغمة مشغلة، توصيل مصدرها إلى وجهة التسجيل
-        if (currentToneSource) {
-          currentToneSource.connect(recordingDestination);
-        }
-        // دمج تيار الصوت والفييديو
-        const combinedStream = new MediaStream();
-        recordingDestination.stream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
-        cameraStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
-        const videoPreview = document.getElementById("videoPreview");
-        videoPreview.muted = true; // كتم المعاينة لتفادي الصدى
-        videoPreview.style.display = "block";
-        videoPreview.srcObject = combinedStream;
-        recordedChunksVideo = [];
-        mediaRecorderVideo = new MediaRecorder(combinedStream);
-        mediaRecorderVideo.ondataavailable = function(e) {
-          if(e.data && e.data.size > 0) {
-            recordedChunksVideo.push(e.data);
-          }
-        };
-        mediaRecorderVideo.onstart = function() {
-          document.getElementById("startVideoRecord").innerText = "Recording...";
-        };
-        mediaRecorderVideo.onstop = function() {
-          document.getElementById("startVideoRecord").innerText = "تسجيل فيديو";
-          const blob = new Blob(recordedChunksVideo, { type: "video/webm" });
-          const url = URL.createObjectURL(blob);
-          const downloadLink = document.getElementById("videoDownloadLink");
-          downloadLink.href = url;
-          downloadLink.download = "recorded_video.webm";
-          downloadLink.style.display = "block";
-          downloadLink.innerText = "تحميل الفيديو";
-        };
-        mediaRecorderVideo.start();
-        document.getElementById("startVideoRecord").disabled = true;
-        document.getElementById("stopVideoRecord").disabled = false;
+        document.execCommand('copy');
+        alert('تم نسخ النتائج إلى الحافظة');
       } catch (err) {
-        console.error("خطأ في بدء تسجيل الفيديو:", err);
+        alert('تعذر نسخ النتائج');
+      }
+      window.getSelection().removeAllRanges();
+    }
+
+    // وظائف إعادة التعيين لمسح المدخلات والنتائج لكل قسم
+    function resetSection(sectionId) {
+      if(sectionId === 'nai') {
+        document.getElementById("length").value = "";
+        document.getElementById("naiResults").innerHTML = "";
+        document.getElementById("khaznaDiameter").value = "";
+        document.getElementById("radadResult").innerHTML = "";
+        removeError("length");
+        removeError("khaznaDiameter");
+      } else if(sectionId === 'kawala') {
+        document.getElementById("totalLength").value = "";
+        document.getElementById("kawalaResults").innerHTML = "";
+        removeError("totalLength");
       }
     }
 
-    function stopVideoRecording() {
-      if (mediaRecorderVideo && mediaRecorderVideo.state !== "inactive") {
-        mediaRecorderVideo.stop();
-        document.getElementById("startVideoRecord").disabled = false;
-        document.getElementById("stopVideoRecord").disabled = true;
-        const videoPreview = document.getElementById("videoPreview");
-        if(videoPreview.srcObject) {
-          videoPreview.srcObject.getTracks().forEach(track => track.stop());
-        }
-        videoPreview.style.display = "none";
-      }
+    function resetInput(inputId, resultId) {
+      document.getElementById(inputId).value = "";
+      document.getElementById(resultId).innerHTML = "";
+      removeError(inputId);
     }
 
-    async function startAudioRecording() {
-      try {
-        if (!globalAudioContext) { globalAudioContext = new AudioContext(); }
-        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const micSource = globalAudioContext.createMediaStreamSource(micStream);
-        const recordingDestination = globalAudioContext.createMediaStreamDestination();
-        micSource.connect(recordingDestination);
-        if (currentToneSource) {
-          currentToneSource.connect(recordingDestination);
-        }
-        recordedChunksAudio = [];
-        mediaRecorderAudio = new MediaRecorder(recordingDestination.stream);
-        mediaRecorderAudio.ondataavailable = function(e) {
-          if(e.data && e.data.size > 0) {
-            recordedChunksAudio.push(e.data);
-          }
-        };
-        mediaRecorderAudio.onstart = function() {
-          document.getElementById("startAudioRecord").innerText = "Recording...";
-        };
-        mediaRecorderAudio.onstop = function() {
-          document.getElementById("startAudioRecord").innerText = "تسجيل صوت";
-          const blob = new Blob(recordedChunksAudio, { type: "audio/webm" });
-          const url = URL.createObjectURL(blob);
-          const audioPreview = document.getElementById("audioPreview");
-          audioPreview.src = url;
-          audioPreview.style.display = "block";
-          const downloadLink = document.getElementById("audioDownloadLink");
-          downloadLink.href = url;
-          downloadLink.download = "recorded_audio.webm";
-          downloadLink.style.display = "block";
-          downloadLink.innerText = "تحميل التسجيل الصوتي";
-        };
-        mediaRecorderAudio.start();
-        document.getElementById("startAudioRecord").disabled = true;
-        document.getElementById("stopAudioRecord").disabled = false;
-      } catch (err) {
-        console.error("خطأ في بدء تسجيل الصوت:", err);
-      }
-    }
-
-    function stopAudioRecording() {
-      if (mediaRecorderAudio && mediaRecorderAudio.state !== "inactive") {
-        mediaRecorderAudio.stop();
-        document.getElementById("startAudioRecord").disabled = false;
-        document.getElementById("stopAudioRecord").disabled = true;
-      }
+    function removeError(inputId) {
+      document.getElementById(inputId).classList.remove('error');
     }
 
     // إظهار الفوتر بعد تحميل الصفحة
