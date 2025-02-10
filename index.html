@@ -476,38 +476,36 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
-    // دالة تبديل تشغيل/إيقاف الصوت باستخدام زر (تمرير العنصر والنغمة)
+    // دالة تبديل تشغيل/إيقاف الصوت مع تفعيل التشغيل المستمر للنغمة (loop)
     function togglePlay(btn, note) {
-      // إذا كانت النغمة المطلوبة هي النغمة التي تعمل حالياً، قم بإيقافها
+      // إذا كانت النغمة المطلوبة قيد التشغيل بالفعل، نقوم بإيقافها وإلغاء خاصية التكرار
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
         audioPlayers[note].pause();
         audioPlayers[note].currentTime = 0;
+        audioPlayers[note].loop = false; // إيقاف التكرار عند الإيقاف
         btn.innerText = "▶";
         currentPlaying = null;
         currentButton = null;
       } else {
-        // إذا كانت هناك نغمة أخرى تعمل، قم بإيقافها وتحديث رمز زرها
+        // إذا كانت هناك نغمة أخرى تعمل، نقوم بإيقافها وإلغاء خاصية التكرار عنها
         if (currentPlaying && audioPlayers[currentPlaying] && !audioPlayers[currentPlaying].paused) {
           audioPlayers[currentPlaying].pause();
           audioPlayers[currentPlaying].currentTime = 0;
+          audioPlayers[currentPlaying].loop = false;
           if (currentButton) {
             currentButton.innerText = "▶";
           }
         }
-        // تشغيل النغمة المطلوبة
+        // إنشاء عنصر صوت جديد إذا لم يكن موجوداً مسبقاً
         if (!audioPlayers[note]) {
           audioPlayers[note] = new Audio(noteAudioMapping[note]);
         }
+        // تفعيل خاصية التكرار للنغمة بحيث تبقى مستمرة
+        audioPlayers[note].loop = true;
         audioPlayers[note].play();
         btn.innerText = "■";
         currentPlaying = note;
         currentButton = btn;
-        // عند انتهاء تشغيل النغمة، استعادة رمز التشغيل وإعادة تعيين المتغيرات
-        audioPlayers[note].onended = function() {
-          btn.innerText = "▶";
-          currentPlaying = null;
-          currentButton = null;
-        };
       }
     }
 
