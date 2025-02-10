@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تطبيق صناعة الناي والكولة</title>
+  <title>تطبيق صناعة الناي والكولة - مع تسجيل فيديو/صوت</title>
   <style>
     /* إعداد متغيرات الألوان */
     :root {
@@ -233,6 +233,26 @@
       border-color: red !important;
     }
 
+    /* تنسيق قسم التسجيل */
+    #recordingSection {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #444;
+      text-align: center;
+    }
+
+    #recordingSection button {
+      margin: 5px;
+      min-width: 150px;
+    }
+
+    #recordingSection video,
+    #recordingSection audio {
+      margin-top: 10px;
+      border: 1px solid #444;
+      border-radius: 5px;
+    }
+
     .footer {
       margin-top: 30px;
       font-size: 14px;
@@ -404,6 +424,26 @@
       <div id="scaleResult" class="result-section scale-result"></div>
     </div>
 
+    <!-- قسم التسجيل: فيديو وصوت -->
+    <div id="recordingSection">
+      <div class="section-header">التسجيل</div>
+      <div>
+        <button id="startVideoRecord" onclick="startVideoRecording()">تسجيل فيديو</button>
+        <button id="stopVideoRecord" onclick="stopVideoRecording()" disabled>إيقاف تسجيل الفيديو</button>
+      </div>
+      <video id="videoPreview" autoplay playsinline style="width:100%; max-width:400px; display:none;"></video>
+      <br>
+      <a id="videoDownloadLink" style="display:none;">تحميل الفيديو</a>
+      <hr style="margin:20px 0; border: 1px solid #444;">
+      <div>
+        <button id="startAudioRecord" onclick="startAudioRecording()">تسجيل صوت</button>
+        <button id="stopAudioRecord" onclick="stopAudioRecording()" disabled>إيقاف تسجيل الصوت</button>
+      </div>
+      <audio id="audioPreview" controls style="display:none; width:100%; max-width:400px;"></audio>
+      <br>
+      <a id="audioDownloadLink" style="display:none;">تحميل التسجيل الصوتي</a>
+    </div>
+
     <div class="footer">
       تصميم وتطوير:
       <a href="https://www.facebook.com/kawana667788/" target="_blank">خالد باشا</a>
@@ -417,6 +457,7 @@
   </div>
 
   <script>
+    // ---------------------- الجزء المتعلق بالصوت والنغمات ----------------------
     // كائن لتخزين عناصر الصوت لتفعيل خاصية التبديل (تشغيل/إيقاف)
     var audioPlayers = {};
 
@@ -438,11 +479,10 @@
       "لا": "لا - سي - دو نصف دييز - ري - مي - فا دييز - صول نصف دييز - لا",
       "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف بيمول - سي بيمول",
       "سي": "سي - دو دييز - ري نصف دييز - مي - فا دييز - صول دييز - لا نصف دييز - سي",
-      // خيار علامات الثلاث ارباع مع العلامات المطلوبة
-      "سلم موسيقي كامل": "ري نصف بيمول - دو نصف دييز - مي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
+      "علامات الثلاث ارباع": "ري نصف بيمول - دو نصف دييز - مي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
     };
 
-    // تحديث كائن ربط أسماء النغمات بروابط الأصوات
+    // كائن ربط أسماء النغمات بروابط الأصوات
     const noteAudioMapping = {
       "دو": "https://dl.dropboxusercontent.com/scl/fi/ody6hdacpjd31kxm37cbc/.mp3?rlkey=r74goqb6l6ll07ham3pytufkp",
       "دو دييز": "https://dl.dropboxusercontent.com/scl/fi/sbiblojbrx9hnvxmfqk18/.mp3?rlkey=ey7yp6k60402fje5r49bx8qvf",
@@ -715,6 +755,139 @@
 
     function removeError(inputId) {
       document.getElementById(inputId).classList.remove('error');
+    }
+
+    // ---------------------- الجزء الخاص بالتسجيل (فيديو وصوت) ----------------------
+    let mediaRecorderVideo;
+    let recordedChunksVideo = [];
+    let mediaRecorderAudio;
+    let recordedChunksAudio = [];
+
+    // بدء تسجيل الفيديو (يستخدم الكاميرا مع دمج صوت الميكروفون وصوت النغمة إن وُجد)
+    async function startVideoRecording() {
+      try {
+        // الحصول على صوت الميكروفون
+        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // الحصول على فيديو الكاميرا (بدون صوت)
+        const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // محاولة التقاط صوت النغمة إن كانت تعمل
+        let noteStream = new MediaStream();
+        if (currentPlaying && audioPlayers[currentPlaying] && audioPlayers[currentPlaying].captureStream) {
+          noteStream = audioPlayers[currentPlaying].captureStream();
+        }
+        // استخدام AudioContext لدمج صوت الميكروفون وصوت النغمة
+        const audioContext = new AudioContext();
+        const destination = audioContext.createMediaStreamDestination();
+        if(micStream.getAudioTracks().length > 0) {
+          const micSource = audioContext.createMediaStreamSource(micStream);
+          micSource.connect(destination);
+        }
+        if(noteStream.getAudioTracks().length > 0) {
+          const noteSource = audioContext.createMediaStreamSource(noteStream);
+          noteSource.connect(destination);
+        }
+        const combinedAudioStream = destination.stream;
+        // إنشاء تيار موحد يجمع بين مسار الصوت الموحد ومسارات الفيديو
+        const combinedStream = new MediaStream();
+        combinedAudioStream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
+        cameraStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
+        
+        // عرض معاينة الفيديو
+        const videoPreview = document.getElementById("videoPreview");
+        videoPreview.style.display = "block";
+        videoPreview.srcObject = combinedStream;
+        
+        // تهيئة MediaRecorder لتسجيل combinedStream
+        mediaRecorderVideo = new MediaRecorder(combinedStream);
+        mediaRecorderVideo.ondataavailable = function(e) {
+          if(e.data && e.data.size > 0) {
+            recordedChunksVideo.push(e.data);
+          }
+        };
+        mediaRecorderVideo.onstop = function() {
+          const blob = new Blob(recordedChunksVideo, { type: "video/webm" });
+          const url = URL.createObjectURL(blob);
+          const downloadLink = document.getElementById("videoDownloadLink");
+          downloadLink.href = url;
+          downloadLink.download = "recorded_video.webm";
+          downloadLink.style.display = "block";
+          downloadLink.innerText = "تحميل الفيديو";
+        };
+        mediaRecorderVideo.start();
+        document.getElementById("startVideoRecord").disabled = true;
+        document.getElementById("stopVideoRecord").disabled = false;
+      } catch (err) {
+        console.error("خطأ في بدء تسجيل الفيديو:", err);
+      }
+    }
+
+    // إيقاف تسجيل الفيديو
+    function stopVideoRecording() {
+      if (mediaRecorderVideo && mediaRecorderVideo.state !== "inactive") {
+        mediaRecorderVideo.stop();
+        document.getElementById("startVideoRecord").disabled = false;
+        document.getElementById("stopVideoRecord").disabled = true;
+        // إيقاف مسارات المعاينة
+        const videoPreview = document.getElementById("videoPreview");
+        if(videoPreview.srcObject) {
+          videoPreview.srcObject.getTracks().forEach(track => track.stop());
+        }
+        videoPreview.style.display = "none";
+      }
+    }
+
+    // بدء تسجيل الصوت (دمج صوت الميكروفون وصوت النغمة)
+    async function startAudioRecording() {
+      try {
+        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        let noteStream = new MediaStream();
+        if (currentPlaying && audioPlayers[currentPlaying] && audioPlayers[currentPlaying].captureStream) {
+          noteStream = audioPlayers[currentPlaying].captureStream();
+        }
+        const audioContext = new AudioContext();
+        const destination = audioContext.createMediaStreamDestination();
+        if(micStream.getAudioTracks().length > 0) {
+          const micSource = audioContext.createMediaStreamSource(micStream);
+          micSource.connect(destination);
+        }
+        if(noteStream.getAudioTracks().length > 0) {
+          const noteSource = audioContext.createMediaStreamSource(noteStream);
+          noteSource.connect(destination);
+        }
+        const combinedStream = destination.stream;
+        mediaRecorderAudio = new MediaRecorder(combinedStream);
+        mediaRecorderAudio.ondataavailable = function(e) {
+          if(e.data && e.data.size > 0) {
+            recordedChunksAudio.push(e.data);
+          }
+        };
+        mediaRecorderAudio.onstop = function() {
+          const blob = new Blob(recordedChunksAudio, { type: "audio/webm" });
+          const url = URL.createObjectURL(blob);
+          const audioPreview = document.getElementById("audioPreview");
+          audioPreview.src = url;
+          audioPreview.style.display = "block";
+          const downloadLink = document.getElementById("audioDownloadLink");
+          downloadLink.href = url;
+          downloadLink.download = "recorded_audio.webm";
+          downloadLink.style.display = "block";
+          downloadLink.innerText = "تحميل التسجيل الصوتي";
+        };
+        mediaRecorderAudio.start();
+        document.getElementById("startAudioRecord").disabled = true;
+        document.getElementById("stopAudioRecord").disabled = false;
+      } catch (err) {
+        console.error("خطأ في بدء تسجيل الصوت:", err);
+      }
+    }
+
+    // إيقاف تسجيل الصوت
+    function stopAudioRecording() {
+      if (mediaRecorderAudio && mediaRecorderAudio.state !== "inactive") {
+        mediaRecorderAudio.stop();
+        document.getElementById("startAudioRecord").disabled = false;
+        document.getElementById("stopAudioRecord").disabled = true;
+      }
     }
 
     // إظهار الفوتر بعد تحميل الصفحة
