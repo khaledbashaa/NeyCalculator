@@ -285,13 +285,10 @@
       margin-top: 20px;
     }
 
-    /* تعديل شبكة البطاقات لتكون عرضياً مع التمرير الأفقي */
+    /* عرض النغمات في شبكة منظمة تناسب جميع الشاشات */
     .scale-grid {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
       margin-top: 20px;
     }
@@ -302,21 +299,13 @@
       border: 1px solid var(--input-border);
       border-radius: 5px;
       text-align: center;
-      min-width: 80px;
       transition: transform 0.3s ease;
-      flex-shrink: 0;
     }
 
     .scale-card:hover {
       transform: scale(1.05);
     }
 
-    .scale-arrow {
-      font-size: 24px;
-      color: var(--accent);
-      align-self: center;
-    }
-    
     /* زر تشغيل وإيقاف الصوت لكل نغمة (تبديل) */
     .play-note {
       margin-top: 5px;
@@ -339,7 +328,7 @@
     <div class="tabs">
       <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
       <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
-      <button class="tab-button" onclick="showTab('scale')"> مقام الراست من كل الدرجات</button>
+      <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
     </div>
 
     <!-- قسم صناعة الناي -->
@@ -528,9 +517,6 @@
             <div class="note-name">${note}</div>
             <button class="play-note" onclick="togglePlay(this, '${note}')">▶</button>
           </div>`;
-        if (index < notes.length - 1) {
-          html += `<div class="scale-arrow">→</div>`;
-        }
       });
       html += `</div>`;
       scaleResultDiv.innerHTML = html;
