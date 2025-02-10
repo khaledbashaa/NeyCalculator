@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -286,10 +285,11 @@
       margin-top: 20px;
     }
 
-    /* تصميم شبكة البطاقات لعرض النغمات */
+    /* تعديل شبكة البطاقات لتكون عرضياً مع التمرير الأفقي */
     .scale-grid {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      overflow-x: auto;
       align-items: center;
       justify-content: center;
       gap: 10px;
@@ -304,6 +304,7 @@
       text-align: center;
       min-width: 80px;
       transition: transform 0.3s ease;
+      flex-shrink: 0;
     }
 
     .scale-card:hover {
