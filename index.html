@@ -233,12 +233,13 @@
       border-color: red !important;
     }
 
-    /* تنسيق قسم التسجيل */
+    /* تنسيق قسم التسجيل (فيديو وصوت) الذي يظهر فقط في قسم مقام الراست */
     #recordingSection {
       margin-top: 30px;
       padding-top: 20px;
       border-top: 1px solid #444;
       text-align: center;
+      display: none; /* سيتم إظهاره فقط عندما يكون قسم "مقام الراست" مفعل */
     }
 
     #recordingSection button {
@@ -357,7 +358,7 @@
     <div class="tabs">
       <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
       <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
-      <button class="tab-button" onclick="showTab('scale')"> مقام الراست من كل الدرجات</button>
+      <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
     </div>
 
     <!-- قسم صناعة الناي -->
@@ -416,32 +417,31 @@
           <option value="لا">لا</option>
           <option value="سي بيمول">سي بيمول</option>
           <option value="سي">سي</option>
-          <!-- خيار علامات الثلاث ارباع -->
           <option value="علامات الثلاث ارباع">علامات الثلاث ارباع</option>
         </select>
         <button onclick="showScale()" class="tab-button scale-btn">عرض السلم</button>
       </div>
       <div id="scaleResult" class="result-section scale-result"></div>
-    </div>
 
-    <!-- قسم التسجيل: فيديو وصوت -->
-    <div id="recordingSection">
-      <div class="section-header">التسجيل</div>
-      <div>
-        <button id="startVideoRecord" onclick="startVideoRecording()">تسجيل فيديو</button>
-        <button id="stopVideoRecord" onclick="stopVideoRecording()" disabled>إيقاف تسجيل الفيديو</button>
+      <!-- قسم التسجيل يظهر فقط في هذا التبويب -->
+      <div id="recordingSection">
+        <div class="section-header">التسجيل</div>
+        <div>
+          <button id="startVideoRecord" onclick="startVideoRecording()">تسجيل فيديو</button>
+          <button id="stopVideoRecord" onclick="stopVideoRecording()" disabled>إيقاف تسجيل الفيديو</button>
+        </div>
+        <video id="videoPreview" autoplay playsinline style="width:100%; max-width:400px; display:none;"></video>
+        <br>
+        <a id="videoDownloadLink" style="display:none;">تحميل الفيديو</a>
+        <hr style="margin:20px 0; border: 1px solid #444;">
+        <div>
+          <button id="startAudioRecord" onclick="startAudioRecording()">تسجيل صوت</button>
+          <button id="stopAudioRecord" onclick="stopAudioRecording()" disabled>إيقاف تسجيل الصوت</button>
+        </div>
+        <audio id="audioPreview" controls style="display:none; width:100%; max-width:400px;"></audio>
+        <br>
+        <a id="audioDownloadLink" style="display:none;">تحميل التسجيل الصوتي</a>
       </div>
-      <video id="videoPreview" autoplay playsinline style="width:100%; max-width:400px; display:none;"></video>
-      <br>
-      <a id="videoDownloadLink" style="display:none;">تحميل الفيديو</a>
-      <hr style="margin:20px 0; border: 1px solid #444;">
-      <div>
-        <button id="startAudioRecord" onclick="startAudioRecording()">تسجيل صوت</button>
-        <button id="stopAudioRecord" onclick="stopAudioRecording()" disabled>إيقاف تسجيل الصوت</button>
-      </div>
-      <audio id="audioPreview" controls style="display:none; width:100%; max-width:400px;"></audio>
-      <br>
-      <a id="audioDownloadLink" style="display:none;">تحميل التسجيل الصوتي</a>
     </div>
 
     <div class="footer">
@@ -516,31 +516,25 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
-    // دالة تبديل تشغيل/إيقاف الصوت مع تفعيل التشغيل المستمر للنغمة (loop)
+    // دالة تبديل تشغيل/إيقاف الصوت مع تشغيله بشكل مستمر (loop)
     function togglePlay(btn, note) {
-      // إذا كانت النغمة المطلوبة قيد التشغيل بالفعل، نقوم بإيقافها وإلغاء خاصية التكرار
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
         audioPlayers[note].pause();
         audioPlayers[note].currentTime = 0;
-        audioPlayers[note].loop = false; // إيقاف التكرار عند الإيقاف
+        audioPlayers[note].loop = false;
         btn.innerText = "▶";
         currentPlaying = null;
         currentButton = null;
       } else {
-        // إذا كانت هناك نغمة أخرى تعمل، نقوم بإيقافها وإلغاء خاصية التكرار عنها
         if (currentPlaying && audioPlayers[currentPlaying] && !audioPlayers[currentPlaying].paused) {
           audioPlayers[currentPlaying].pause();
           audioPlayers[currentPlaying].currentTime = 0;
           audioPlayers[currentPlaying].loop = false;
-          if (currentButton) {
-            currentButton.innerText = "▶";
-          }
+          if (currentButton) { currentButton.innerText = "▶"; }
         }
-        // إنشاء عنصر صوت جديد إذا لم يكن موجوداً مسبقاً
         if (!audioPlayers[note]) {
           audioPlayers[note] = new Audio(noteAudioMapping[note]);
         }
-        // تفعيل خاصية التكرار للنغمة بحيث تبقى مستمرة
         audioPlayers[note].loop = true;
         audioPlayers[note].play();
         btn.innerText = "■";
@@ -572,15 +566,22 @@
       scaleResultDiv.innerHTML = html;
     }
 
-    // تبديل علامات التبويب
+    // تبديل علامات التبويب، وإظهار قسم التسجيل فقط في تبويب "مقام الراست"
     function showTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
       document.querySelector(`button[onclick="showTab('${tabName}')"]`).classList.add('active');
+      
+      // إظهار قسم التسجيل فقط عندما يكون تبويب "scale" مفعل
+      if(tabName === 'scale'){
+        document.getElementById('recordingSection').style.display = 'block';
+      } else {
+        document.getElementById('recordingSection').style.display = 'none';
+      }
     }
 
-    // تمييز الحقول الخاطئة
+    // دوال التحقق من المدخلات
     function validateInput(inputId) {
       const input = document.getElementById(inputId);
       if (!input.value || parseFloat(input.value) <= 0) {
@@ -599,12 +600,9 @@
         return;
       }
       const totalLength = parseFloat(document.getElementById("length").value);
-
-      // نسب الثقوب الأصلية
       const holePositionsRatios = [7.3 / 53, 9.7 / 53, 12.1 / 53, 16.9 / 53, 19.3 / 53, 21.5 / 53, 0.5];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
 
-      // إنشاء جداول النتائج
       let resultHTML = `
         <div class="result-table">
           <table>
@@ -629,8 +627,6 @@
             </thead>
             <tbody>
       `;
-
-      // الحساب بالنسبة للطول الأصلي 59.2 سم وأطوال الفكوك الأصلية
       const originalNaiLength = 59.2;
       const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
       const ratio = totalLength / originalNaiLength;
@@ -669,13 +665,9 @@
         return;
       }
       const totalLength = parseFloat(document.getElementById("totalLength").value);
-
-      // نسب الفكوك للكولة
       const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
       const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
       const jawLengths = jawRatios.map(ratio => (ratio / sumJawRatios) * totalLength);
-
-      // نسب الثقوب للكولة
       const holePositionsRatios = [8.6 / 56, 12.9 / 56, 17.2 / 56, 23.5 / 56, 27.8 / 56, 32.1 / 56];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
 
@@ -731,7 +723,7 @@
       window.getSelection().removeAllRanges();
     }
 
-    // وظائف إعادة التعيين لمسح المدخلات والنتائج لكل قسم
+    // وظائف إعادة التعيين لمسح المدخلات والنتائج
     function resetSection(sectionId) {
       if(sectionId === 'nai') {
         document.getElementById("length").value = "";
@@ -763,41 +755,42 @@
     let mediaRecorderAudio;
     let recordedChunksAudio = [];
 
-    // بدء تسجيل الفيديو (يستخدم الكاميرا مع دمج صوت الميكروفون وصوت النغمة إن وُجد)
+    // بدء تسجيل الفيديو مع دمج صوت المايك والنغمة باستخدام AudioContext
     async function startVideoRecording() {
       try {
-        // الحصول على صوت الميكروفون
+        // الحصول على تيار المايكروفون والفيديو
         const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        // الحصول على فيديو الكاميرا (بدون صوت)
         const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-        // محاولة التقاط صوت النغمة إن كانت تعمل
-        let noteStream = new MediaStream();
-        if (currentPlaying && audioPlayers[currentPlaying] && audioPlayers[currentPlaying].captureStream) {
-          noteStream = audioPlayers[currentPlaying].captureStream();
-        }
-        // استخدام AudioContext لدمج صوت الميكروفون وصوت النغمة
+        // إنشاء AudioContext ووجهة (MediaStreamDestination)
         const audioContext = new AudioContext();
         const destination = audioContext.createMediaStreamDestination();
+
+        // توصيل تيار المايكروفون
         if(micStream.getAudioTracks().length > 0) {
           const micSource = audioContext.createMediaStreamSource(micStream);
           micSource.connect(destination);
         }
-        if(noteStream.getAudioTracks().length > 0) {
-          const noteSource = audioContext.createMediaStreamSource(noteStream);
-          noteSource.connect(destination);
+        // توصيل صوت النغمة إذا كانت مشغلة
+        if (currentPlaying && audioPlayers[currentPlaying]) {
+          try {
+            const noteSource = audioContext.createMediaElementSource(audioPlayers[currentPlaying]);
+            noteSource.connect(destination);
+          } catch(e) {
+            console.error("خطأ في توصيل مصدر صوت النغمة:", e);
+          }
         }
         const combinedAudioStream = destination.stream;
-        // إنشاء تيار موحد يجمع بين مسار الصوت الموحد ومسارات الفيديو
+        // دمج التيارات الصوتية والفيديو
         const combinedStream = new MediaStream();
         combinedAudioStream.getAudioTracks().forEach(track => combinedStream.addTrack(track));
         cameraStream.getVideoTracks().forEach(track => combinedStream.addTrack(track));
-        
+
         // عرض معاينة الفيديو
         const videoPreview = document.getElementById("videoPreview");
         videoPreview.style.display = "block";
         videoPreview.srcObject = combinedStream;
-        
-        // تهيئة MediaRecorder لتسجيل combinedStream
+
+        recordedChunksVideo = [];
         mediaRecorderVideo = new MediaRecorder(combinedStream);
         mediaRecorderVideo.ondataavailable = function(e) {
           if(e.data && e.data.size > 0) {
@@ -827,7 +820,6 @@
         mediaRecorderVideo.stop();
         document.getElementById("startVideoRecord").disabled = false;
         document.getElementById("stopVideoRecord").disabled = true;
-        // إيقاف مسارات المعاينة
         const videoPreview = document.getElementById("videoPreview");
         if(videoPreview.srcObject) {
           videoPreview.srcObject.getTracks().forEach(track => track.stop());
@@ -836,25 +828,27 @@
       }
     }
 
-    // بدء تسجيل الصوت (دمج صوت الميكروفون وصوت النغمة)
+    // بدء تسجيل الصوت مع دمج صوت المايك والنغمة
     async function startAudioRecording() {
       try {
         const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        let noteStream = new MediaStream();
-        if (currentPlaying && audioPlayers[currentPlaying] && audioPlayers[currentPlaying].captureStream) {
-          noteStream = audioPlayers[currentPlaying].captureStream();
-        }
         const audioContext = new AudioContext();
         const destination = audioContext.createMediaStreamDestination();
+
         if(micStream.getAudioTracks().length > 0) {
           const micSource = audioContext.createMediaStreamSource(micStream);
           micSource.connect(destination);
         }
-        if(noteStream.getAudioTracks().length > 0) {
-          const noteSource = audioContext.createMediaStreamSource(noteStream);
-          noteSource.connect(destination);
+        if (currentPlaying && audioPlayers[currentPlaying]) {
+          try {
+            const noteSource = audioContext.createMediaElementSource(audioPlayers[currentPlaying]);
+            noteSource.connect(destination);
+          } catch (e) {
+            console.error("خطأ في توصيل صوت النغمة:", e);
+          }
         }
         const combinedStream = destination.stream;
+        recordedChunksAudio = [];
         mediaRecorderAudio = new MediaRecorder(combinedStream);
         mediaRecorderAudio.ondataavailable = function(e) {
           if(e.data && e.data.size > 0) {
