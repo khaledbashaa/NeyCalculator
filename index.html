@@ -285,7 +285,6 @@
       margin-top: 20px;
     }
 
-    /* عرض النغمات في شبكة منظمة تناسب جميع الشاشات */
     .scale-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -306,7 +305,6 @@
       transform: scale(1.05);
     }
 
-    /* زر تشغيل وإيقاف الصوت لكل نغمة (تبديل) */
     .play-note {
       margin-top: 5px;
       background-color: var(--accent);
@@ -321,6 +319,70 @@
     .play-note:hover {
       background-color: var(--hover-bg);
     }
+
+    /* ===== تنسيق خاص لقسم تحديد درجة الناي والكولة ===== */
+    /* لجعل هذا القسم يظهر بخلفية فاتحة داخل التطبيق */
+    #determine {
+      padding: 20px 0;
+    }
+    /* الصندوق الفاتح الذي يحتوي على محتوى الحاسبة */
+    .light-box {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      color: #333;
+      margin-top: 10px;
+    }
+    .light-box h1 {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .light-box p {
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    .light-box label {
+      font-size: 16px;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .light-box input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    .light-box .fixed-info {
+      background-color: #eee;
+      padding: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      color: #000;
+    }
+    .light-box button {
+      background-color: #ffd700;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .light-box button:hover {
+      background-color: #e6c200;
+    }
+    .light-box h2 {
+      text-align: center;
+      font-size: 20px;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -329,6 +391,7 @@
       <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
       <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
       <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
+      <button class="tab-button" onclick="showTab('determine')">تحديد درجة الناي والكولة</button>
     </div>
 
     <!-- قسم صناعة الناي -->
@@ -395,6 +458,35 @@
       <div id="scaleResult" class="result-section scale-result"></div>
     </div>
 
+    <!-- قسم تحديد درجة الناي والكولة -->
+    <div id="determine" class="tab-content">
+      <div class="light-box">
+        <h1>حاسبة درجة الناي</h1>
+        <p>أدخل القيم المطلوبة (الطول والقطر بالسنتيمتر، والرطوبة بالنسبة المئوية):</p>
+        
+        <label for="noteLength">الطول (L):</label>
+        <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
+        
+        <label for="noteUpperDiameter">قطر الناي العلوي (d₁):</label>
+        <input type="number" id="noteUpperDiameter" step="any" placeholder="مثلاً 1.8">
+        
+        <label for="noteLowerDiameter">قطر الناي السفلي (d₂):</label>
+        <input type="number" id="noteLowerDiameter" step="any" placeholder="مثلاً 1.55">
+        
+        <label for="noteHumidity">الرطوبة النسبية (%):</label>
+        <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
+        
+        <div class="fixed-info">
+          <p><strong>درجة الحرارة:</strong> 37°م (ثابت)</p>
+          <p><strong>معامل التصحيح:</strong> 0.8 (ثابت)</p>
+        </div>
+        
+        <button onclick="calculateNote()">احسب الدرجة</button>
+        
+        <h2 id="noteResult"></h2>
+      </div>
+    </div>
+
     <div class="footer">
       تصميم وتطوير:
       <a href="https://www.facebook.com/kawana667788/" target="_blank">خالد باشا</a>
@@ -429,7 +521,6 @@
       "لا": "لا - سي - دو نصف دييز - ري - مي - فا دييز - صول نصف دييز - لا",
       "سي بيمول": "سي بيمول - دو - ري نصف بيمول - مي بيمول - فا - صول - لا نصف بيمول - سي بيمول",
       "سي": "سي - دو دييز - ري نصف دييز - مي - فا دييز - صول دييز - لا نصف دييز - سي",
-      // خيار علامات الثلاث ارباع مع العلامات المطلوبة
       "سلم موسيقي كامل": "ري نصف بيمول - دو نصف دييز - مي نصف بيمول - فا نصف دييز - صول نصف بيمول - لا نصف بيمول - لا نصف دييز - سي نصف بيمول - سي نصف دييز"
     };
 
@@ -467,9 +558,8 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
-    // دالة تبديل تشغيل/إيقاف الصوت باستخدام زر (تمرير العنصر والنغمة)
+    // دالة تبديل تشغيل/إيقاف الصوت باستخدام زر (تشغيل/إيقاف)
     function togglePlay(btn, note) {
-      // إذا كانت النغمة المطلوبة هي النغمة التي تعمل حالياً، قم بإيقافها
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
         audioPlayers[note].pause();
         audioPlayers[note].currentTime = 0;
@@ -477,7 +567,6 @@
         currentPlaying = null;
         currentButton = null;
       } else {
-        // إذا كانت هناك نغمة أخرى تعمل، قم بإيقافها وتحديث رمز زرها
         if (currentPlaying && audioPlayers[currentPlaying] && !audioPlayers[currentPlaying].paused) {
           audioPlayers[currentPlaying].pause();
           audioPlayers[currentPlaying].currentTime = 0;
@@ -485,7 +574,6 @@
             currentButton.innerText = "▶";
           }
         }
-        // تشغيل النغمة المطلوبة
         if (!audioPlayers[note]) {
           audioPlayers[note] = new Audio(noteAudioMapping[note]);
         }
@@ -493,7 +581,6 @@
         btn.innerText = "■";
         currentPlaying = note;
         currentButton = btn;
-        // عند انتهاء تشغيل النغمة، استعادة رمز التشغيل وإعادة تعيين المتغيرات
         audioPlayers[note].onended = function() {
           btn.innerText = "▶";
           currentPlaying = null;
@@ -502,7 +589,7 @@
       }
     }
 
-    // عرض السلم المقامي مع البطاقات وزر تشغيل الصوت لكل نغمة
+    // عرض السلم المقامي
     function showScale() {
       const selectedScale = document.getElementById("scaleSelect").value;
       const scaleResultDiv = document.getElementById("scaleResult");
@@ -550,11 +637,9 @@
       }
       const totalLength = parseFloat(document.getElementById("length").value);
 
-      // نسب الثقوب الأصلية
       const holePositionsRatios = [7.3 / 53, 9.7 / 53, 12.1 / 53, 16.9 / 53, 19.3 / 53, 21.5 / 53, 0.5];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
 
-      // إنشاء جداول النتائج
       let resultHTML = `
         <div class="result-table">
           <table>
@@ -580,7 +665,6 @@
             <tbody>
       `;
 
-      // الحساب بالنسبة للطول الأصلي 59.2 سم وأطوال الفكوك الأصلية
       const originalNaiLength = 59.2;
       const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
       const ratio = totalLength / originalNaiLength;
@@ -620,12 +704,10 @@
       }
       const totalLength = parseFloat(document.getElementById("totalLength").value);
 
-      // نسب الفكوك للكولة
       const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
       const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
       const jawLengths = jawRatios.map(ratio => (ratio / sumJawRatios) * totalLength);
 
-      // نسب الثقوب للكولة
       const holePositionsRatios = [8.6 / 56, 12.9 / 56, 17.2 / 56, 23.5 / 56, 27.8 / 56, 32.1 / 56];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
 
@@ -665,7 +747,7 @@
       document.getElementById("kawalaResults").innerHTML = resultHTML;
     }
 
-    // زر نسخ النتائج إلى الحافظة
+    // نسخ النتائج إلى الحافظة
     function copyResult(sectionId) {
       const section = document.getElementById(sectionId);
       const range = document.createRange();
@@ -681,7 +763,7 @@
       window.getSelection().removeAllRanges();
     }
 
-    // وظائف إعادة التعيين لمسح المدخلات والنتائج لكل قسم
+    // إعادة التعيين لمسح المدخلات والنتائج لكل قسم
     function resetSection(sectionId) {
       if(sectionId === 'nai') {
         document.getElementById("length").value = "";
@@ -705,6 +787,48 @@
 
     function removeError(inputId) {
       document.getElementById(inputId).classList.remove('error');
+    }
+
+    // ===== قسم تحديد درجة الناي والكولة =====
+    // دالة لتحويل التردد إلى اسم الدرجة الموسيقية باستخدام نظام MIDI
+    function frequencyToNoteName(frequency) {
+      let midiNumber = Math.round(12 * Math.log2(frequency / 440) + 69);
+      let noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      let noteName = noteNames[midiNumber % 12];
+      let octave = Math.floor(midiNumber / 12) - 1;
+      return noteName + octave;
+    }
+    
+    function calculateNote() {
+      let L_cm = parseFloat(document.getElementById('noteLength').value);
+      let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
+      let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
+      let humidity = parseFloat(document.getElementById('noteHumidity').value);
+      
+      if(isNaN(L_cm) || isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity)) {
+        alert("يرجى إدخال جميع القيم بشكل صحيح.");
+        return;
+      }
+      
+      let L = L_cm / 100;
+      let d1 = d1_cm / 100;
+      let d2 = d2_cm / 100;
+      
+      let dEffective = (d1 + d2) / 2;
+      let temperature = 37; // ثابت
+      let k = 0.8;        // ثابت
+      
+      let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
+      
+      let n = 1;
+      let frequency = (n * v) / (2 * (L + k * dEffective));
+      
+      let note = frequencyToNoteName(frequency);
+      
+      document.getElementById('noteResult').innerHTML = 
+          "سرعة الصوت: " + v.toFixed(2) + " م/ث<br>" +
+          "التردد: " + frequency.toFixed(2) + " هرتز<br>" +
+          "الدرجة الموسيقية: " + note;
     }
 
     // إظهار الفوتر بعد تحميل الصفحة
