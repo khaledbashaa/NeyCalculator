@@ -390,9 +390,9 @@
       margin-top: 15px;
     }
 
-    /* تنسيق لملاحظة إضافية */
+    /* تنسيق لملاحظة النتائج */
     .note {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 16px;
       color: #ffd700;
       text-align: center;
@@ -419,8 +419,6 @@
         <button onclick="resetSection('nai')">إعادة تعيين</button>
       </div>
       <div id="naiResults" class="result-section"></div>
-      <!-- إضافة ملاحظة تحت الثقب السابع الخلفي -->
-      <p class="note">ملاحظة: يجب رفع الثقب الخلفي بمقدار 1 سم و2 ملم إلى اتجاه الخزنة.</p>
 
       <hr style="margin:20px 0; border: 1px solid #444;">
 
@@ -478,33 +476,7 @@
     <div id="determine" class="tab-content">
       <div class="light-box">
         <h1>حاسبة درجة الناي</h1>
-        <p>أدخل القيم المطلوبة (الطول والقطر بالسنتيمتر، والرطوبة بالنسبة المئوية):</p>
-        
-        <label for="noteLength">الطول (L):</label>
-        <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
-        
-        <label for="noteUpperDiameter">قطر الناي العلوي (d₁):</label>
-        <input type="number" id="noteUpperDiameter" step="any" placeholder="مثلاً 1.8">
-        
-        <label for="noteLowerDiameter">قطر الناي السفلي (d₂):</label>
-        <input type="number" id="noteLowerDiameter" step="any" placeholder="مثلاً 1.55">
-        
-        <label for="noteHumidity">الرطوبة النسبية (%):</label>
-        <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
-        
-        <div class="fixed-info">
-          <p><strong>درجة الحرارة:</strong> 37°م (ثابت)</p>
-          <p><strong>معامل التصحيح:</strong> 0.8 (ثابت)</p>
-        </div>
-        
-        <!-- عند الضغط على الزر يتم حساب الدرجة وعرضها مع تردد الدرجة المختارة من السلم -->
-        <button onclick="calculateNote()">احسب الدرجة</button>
-        
-        <!-- سيتم عرض كافة النتائج داخل هذا العنصر بشكل واضح -->
-        <div id="determineResult" style="margin-top:15px; font-size:16px; font-weight:bold;"></div>
-        
-        <hr>
-        <!-- القائمة المنسدلة لاختيار درجة من السلم الكروماتيكي -->
+        <!-- تم نقل القائمة المنسدلة هنا لتظهر فوق مدخل الطول -->
         <label for="noteSelect">اختر درجة من السلم الكروماتيكي للمقارنة:</label>
         <select id="noteSelect">
           <option value="C1">C1 (دو1)</option>
@@ -587,6 +559,30 @@
           
           <option value="C7">C7 (دو7)</option>
         </select>
+        
+        <!-- مدخل طول الناي يأتي بعد القائمة -->
+        <label for="noteLength">الطول (L):</label>
+        <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
+        
+        <label for="noteUpperDiameter">قطر الناي العلوي (d₁):</label>
+        <input type="number" id="noteUpperDiameter" step="any" placeholder="مثلاً 1.8">
+        
+        <label for="noteLowerDiameter">قطر الناي السفلي (d₂):</label>
+        <input type="number" id="noteLowerDiameter" step="any" placeholder="مثلاً 1.55">
+        
+        <label for="noteHumidity">الرطوبة النسبية (%):</label>
+        <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
+        
+        <div class="fixed-info">
+          <p><strong>درجة الحرارة:</strong> 37°م (ثابت)</p>
+          <p><strong>معامل التصحيح:</strong> 0.8 (ثابت)</p>
+        </div>
+        
+        <!-- عند الضغط على الزر يتم حساب الدرجة وعرضها مع تردد الدرجة المختارة من السلم -->
+        <button onclick="calculateNote()">احسب الدرجة</button>
+        
+        <!-- سيتم عرض كافة النتائج داخل هذا العنصر بشكل واضح -->
+        <div id="determineResult" style="margin-top:15px; font-size:16px; font-weight:bold;"></div>
       </div>
     </div>
 
@@ -745,7 +741,7 @@
       }
     }
 
-    // وظيفة لحساب الناي
+    // وظيفة لحساب الناي وعرض النتائج مع الملاحظة الخاصة بالثقب الخلفي
     function calculateAll() {
       if (!validateInput("length")) {
         alert("الرجاء إدخال طول صحيح للناي!");
@@ -796,6 +792,7 @@
           </table>
         </div>
         <button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>
+        <p class="note">ملاحظة: يجب رفع الثقب الخلفي بمقدار 1 سم و2 ملم إلى اتجاه الخزنة.</p>
       `;
       document.getElementById("naiResults").innerHTML = resultHTML;
     }
