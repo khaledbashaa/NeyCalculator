@@ -50,14 +50,8 @@
       position: relative;
     }
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .tabs {
       display: flex;
@@ -161,9 +155,9 @@
       margin-top: 20px;
     }
     .result-table {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
       gap: 20px;
+      flex-wrap: wrap;
       margin-top: 15px;
     }
     table {
@@ -172,6 +166,7 @@
       background-color: #333;
       border-radius: 10px;
       overflow: hidden;
+      margin-bottom: 20px;
     }
     th, td {
       padding: 10px;
@@ -225,7 +220,7 @@
     }
     @media (max-width: 768px) {
       .result-table {
-        grid-template-columns: 1fr;
+        flex-direction: column;
       }
       .button-group {
         flex-direction: column;
@@ -360,7 +355,6 @@
         <button onclick="resetSection('nai')">إعادة تعيين</button>
       </div>
       <div id="naiResults" class="result-section"></div>
-      <!-- ملاحظة رفع الثقب الخلفي تُعرض ضمن النتائج بعد الضغط على "حساب" -->
       
       <hr style="margin:20px 0; border: 1px solid #444;">
       <div class="section-header">حساب قطر الرداد بناءً على قطر الخزنة</div>
@@ -405,7 +399,6 @@
           <option value="لا">لا</option>
           <option value="سي بيمول">سي بيمول</option>
           <option value="سي">سي</option>
-          <!-- خيار علامات الثلاث ارباع -->
           <option value="علامات الثلاث ارباع">علامات الثلاث ارباع</option>
         </select>
         <button onclick="showScale()" class="tab-button scale-btn">عرض السلم</button>
@@ -417,9 +410,9 @@
     <div id="determine" class="tab-content">
       <div class="light-box">
         <h1>حاسبة درجة الناي</h1>
-        <!-- القائمة المنسدلة لمقارنة درجات السلم الكروماتيك تظهر أولاً -->
+        <!-- القائمة المنسدلة تظهر في أعلى القسم -->
         <label for="noteSelect">اختر نغمة من السلم الكروماتيك (C3 - C6):</label>
-        <select id="noteSelect" onchange="compareNote()">
+        <select id="noteSelect" onchange="calculateNote()">
           <option value="">-- اختر نغمة --</option>
           <option value="C3">C3</option>
           <option value="C#3">C#3</option>
@@ -459,7 +452,7 @@
           <option value="B5">B5</option>
           <option value="C6">C6</option>
         </select>
-        <!-- بقية المدخلات تظهر بعد القائمة -->
+        <!-- باقي المدخلات -->
         <label for="noteLength">الطول (L):</label>
         <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
         
@@ -472,9 +465,8 @@
         <label for="noteHumidity">الرطوبة النسبية (%):</label>
         <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
         
-        <!-- ملاحظة حول معاملات التصحيح بخط ولون أوضح -->
         <p style="font-size:16px; font-weight:bold; color:blue; margin-bottom:5px;">
-          ملاحظة: معامل التصحيح الخاص بدرجة الراست هو 4.4 ومعامل التصحيح الخاص بدرجة البياتى هو 1.2
+          ملاحظة: معامل التصحيح الخاص بالكولة هو 1.75 ومعامل التصحيح الخاص بالناي هو 1.2
         </p>
         
         <label for="noteCorrection">معامل التصحيح (k):</label>
@@ -486,9 +478,8 @@
         
         <button onclick="calculateNote()">احسب الدرجة</button>
         
+        <!-- عرض النتائج داخل جدول واحد -->
         <h2 id="noteResult"></h2>
-        <!-- هنا تُعرض نتائج مقارنة النغمة -->
-        <div id="compareResult" style="margin-top:15px; font-size:16px;"></div>
       </div>
     </div>
 
@@ -558,7 +549,6 @@
     };
 
     function togglePlay(btn, note) {
-      // تأكد من إزالة الفراغات الزائدة
       note = note.trim();
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
         audioPlayers[note].pause();
@@ -592,7 +582,6 @@
       const scaleResultDiv = document.getElementById("scaleResult");
       const scaleString = scales[selectedScale] || "السلم غير متوفر";
       const notes = scaleString.split(" - ");
-      
       let html = `<div class="scale-grid">`;
       notes.forEach((note, index) => {
         html += `
@@ -624,58 +613,61 @@
       }
     }
 
+    // قسم صناعة الناي: حساب الثقوب وأطوال الفكوك
     function calculateAll() {
       if (!validateInput("length")) {
         alert("الرجاء إدخال طول صحيح للناي!");
         return;
       }
       const totalLength = parseFloat(document.getElementById("length").value);
-      const holePositionsRatios = [7.3 / 53, 9.7 / 53, 12.1 / 53, 16.9 / 53, 19.3 / 53, 21.5 / 53, 0.5];
+      const holePositionsRatios = [7.3/53, 9.7/53, 12.1/53, 16.9/53, 19.3/53, 21.5/53, 0.5];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
-      let resultHTML = `
-        <div class="result-table">
-          <table>
-            <thead>
-              <tr><th colspan="2">أماكن الثقوب</th></tr>
-              <tr><th>الثقب</th><th>المسافة (سم)</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
-              <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
-              <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
-              <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
-              <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
-              <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
-              <tr><td>الثقب السابع (الخلفي)</td><td>${holes[6]}</td></tr>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr><th colspan="2">أطوال الفكوك</th></tr>
-              <tr><th>الفك</th><th>الطول (سم)</th></tr>
-            </thead>
-            <tbody>
-      `;
       const originalNaiLength = 59.2;
       const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
-      const ratio = totalLength / originalNaiLength;
-      const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
+      const ratioValue = totalLength / originalNaiLength;
+      const newFukuk = originalFukuk.map(length => (length * ratioValue).toFixed(2));
       const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "الفك الخامس", "الفك السادس", "الفك السابع", "الفك الثامن", "الخزنة"];
-      newFukuk.forEach((length, index) => {
-        resultHTML += `<tr><td>${fukukNames[index]}</td><td>${length}</td></tr>`;
-      });
-      resultHTML += `
-            </tbody>
-          </table>
-        </div>
-        <button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>
-        <p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
+      
+      let tableHTML = `<div class="result-table">
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color:#ddd; color:#333;">
+              <th>الوصف</th>
+              <th>القيمة (سم)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>طول الناي</td>
+              <td>${totalLength}</td>
+            </tr>`;
+      for (let i = 0; i < holes.length; i++) {
+        tableHTML += `<tr><td>الثقب ${i+1}${i===6 ? " (الخلفي)" : ""}</td><td>${holes[i]}</td></tr>`;
+      }
+      tableHTML += `</tbody></table>`;
+      
+      tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
+          <thead>
+            <tr style="background-color:#ddd; color:#333;">
+              <th>الفك</th>
+              <th>الطول (سم)</th>
+            </tr>
+          </thead>
+          <tbody>`;
+      for (let i = 0; i < newFukuk.length; i++) {
+        tableHTML += `<tr><td>${fukukNames[i]}</td><td>${newFukuk[i]}</td></tr>`;
+      }
+      tableHTML += `</tbody></table></div>`;
+      
+      tableHTML += `<p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
           ملاحظة: يجب رفع الثقب الخلفي 1 سم و2 ملم إلى اتجاه الخزنة.
-        </p>
-      `;
-      document.getElementById("naiResults").innerHTML = resultHTML;
+        </p>`;
+      tableHTML += `<button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>`;
+      
+      document.getElementById("naiResults").innerHTML = tableHTML;
     }
 
+    // دالة حساب قطر الرداد بناءً على قطر الخزنة
     function calculateRadadDiameter() {
       if (!validateInput("khaznaDiameter")) {
         alert("الرجاء إدخال قطر خزنة صحيح!");
@@ -687,91 +679,120 @@
         <button class="copy-button" onclick="copyResult('radadResult')">نسخ النتيجة</button>`;
     }
 
+    // قسم صناعة الكولة: حساب الثقوب وأطوال الفكوك
     function calculateKawala() {
       if (!validateInput("totalLength")) {
         alert("الرجاء إدخال طول الكولة!");
         return;
       }
       const totalLength = parseFloat(document.getElementById("totalLength").value);
+      const holePositionsRatios = [8.6/56, 12.9/56, 17.2/56, 23.5/56, 27.8/56, 32.1/56];
+      const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
       const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
       const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
-      const jawLengths = jawRatios.map(ratio => (ratio / sumJawRatios) * totalLength);
-      const holePositionsRatios = [8.6 / 56, 12.9 / 56, 17.2 / 56, 23.5 / 56, 27.8 / 56, 32.1 / 56];
-      const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
-      let resultHTML = `
-        <div class="result-table">
-          <table>
-            <thead>
-              <tr><th colspan="2">أماكن الثقوب</th></tr>
-              <tr><th>الثقب</th><th>المسافة (سم)</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>الثقب الأول</td><td>${holes[0]}</td></tr>
-              <tr><td>الثقب الثاني</td><td>${holes[1]}</td></tr>
-              <tr><td>الثقب الثالث</td><td>${holes[2]}</td></tr>
-              <tr><td>الثقب الرابع</td><td>${holes[3]}</td></tr>
-              <tr><td>الثقب الخامس</td><td>${holes[4]}</td></tr>
-              <tr><td>الثقب السادس</td><td>${holes[5]}</td></tr>
-            </tbody>
-          </table>
-          <table>
-            <thead>
-              <tr><th colspan="2">أطوال الفكوك</th></tr>
-              <tr><th>الفك</th><th>الطول (سم)</th></tr>
-            </thead>
-            <tbody>
-      `;
-      const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "فك الخزنة"];
-      jawLengths.forEach((length, index) => {
-        resultHTML += `<tr><td>${fukukNames[index]}</td><td>${length.toFixed(2)}</td></tr>`;
-      });
-      resultHTML += `
-            </tbody>
-          </table>
-        </div>
-        <button class="copy-button" onclick="copyResult('kawalaResults')">نسخ النتائج</button>
-      `;
-      document.getElementById("kawalaResults").innerHTML = resultHTML;
-    }
-
-    function copyResult(sectionId) {
-      const section = document.getElementById(sectionId);
-      const range = document.createRange();
-      range.selectNode(section);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-      try {
-        document.execCommand('copy');
-        alert('تم نسخ النتائج إلى الحافظة');
-      } catch (err) {
-        alert('تعذر نسخ النتائج');
+      const jawLengths = jawRatios.map(ratio => ((ratio / sumJawRatios) * totalLength).toFixed(2));
+      const jawNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "فك الخزنة"];
+      
+      let tableHTML = `<div class="result-table">
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color:#ddd; color:#333;">
+              <th>الوصف</th>
+              <th>القيمة (سم)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>طول الكولة</td>
+              <td>${totalLength}</td>
+            </tr>`;
+      for (let i = 0; i < holes.length; i++) {
+        tableHTML += `<tr><td>الثقب ${i+1}</td><td>${holes[i]}</td></tr>`;
       }
-      window.getSelection().removeAllRanges();
-    }
-
-    function resetSection(sectionId) {
-      if(sectionId === 'nai') {
-        document.getElementById("length").value = "";
-        document.getElementById("naiResults").innerHTML = "";
-        document.getElementById("khaznaDiameter").value = "";
-        document.getElementById("radadResult").innerHTML = "";
-        removeError("length");
-        removeError("khaznaDiameter");
-      } else if(sectionId === 'kawala') {
-        document.getElementById("totalLength").value = "";
-        document.getElementById("kawalaResults").innerHTML = "";
-        removeError("totalLength");
+      tableHTML += `</tbody></table>`;
+      
+      tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
+          <thead>
+            <tr style="background-color:#ddd; color:#333;">
+              <th>الفك</th>
+              <th>الطول (سم)</th>
+            </tr>
+          </thead>
+          <tbody>`;
+      for (let i = 0; i < jawLengths.length; i++) {
+        tableHTML += `<tr><td>${jawNames[i]}</td><td>${jawLengths[i]}</td></tr>`;
       }
+      tableHTML += `</tbody></table></div>
+      <button class="copy-button" onclick="copyResult('kawalaResults')">نسخ النتائج</button>`;
+      
+      document.getElementById("kawalaResults").innerHTML = tableHTML;
     }
 
-    function resetInput(inputId, resultId) {
-      document.getElementById(inputId).value = "";
-      document.getElementById(resultId).innerHTML = "";
-      removeError(inputId);
-    }
-
-    function removeError(inputId) {
-      document.getElementById(inputId).classList.remove('error');
+    // قسم تحديد درجة الناي والكولة: حساب النتائج المجمعة داخل جدول واحد
+    function calculateNote() {
+      let L_cm = parseFloat(document.getElementById('noteLength').value);
+      let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
+      let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
+      let humidity = parseFloat(document.getElementById('noteHumidity').value);
+      let k = parseFloat(document.getElementById('noteCorrection').value);
+      if (isNaN(L_cm) || isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity) || isNaN(k)) {
+        alert("يرجى إدخال جميع القيم بشكل صحيح.");
+        return;
+      }
+      let L = L_cm / 100;
+      let d1 = d1_cm / 100;
+      let d2 = d2_cm / 100;
+      let dEffective = (d1 + d2) / 2;
+      let temperature = 37;
+      let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
+      let n = 1;
+      let computedFreq = (n * v) / (2 * (L + k * dEffective));
+      let computedNote = frequencyToNoteName(computedFreq);
+      
+      let tableHTML = `<table style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color:#ddd; color:#333;">
+            <th>الوصف</th>
+            <th>القيمة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>سرعة الصوت (م/ث)</td>
+            <td>${v.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>التردد المحتسب (Hz)</td>
+            <td>${computedFreq.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>الدرجة الموسيقية</td>
+            <td>${computedNote}</td>
+          </tr>`;
+      
+      const noteSelect = document.getElementById('noteSelect').value;
+      if (noteSelect !== "") {
+        const standardFreq = chromaticNotes[noteSelect];
+        let L_theoretical = v / (2 * standardFreq) - k * dEffective;
+        L_theoretical = L_theoretical * 100;
+        let indicator = computedFreq > standardFreq ? "العلامة مرتفعة" : "العلامة منخفضة";
+        tableHTML += `
+          <tr>
+            <td>التردد القياسي (${noteSelect}) (Hz)</td>
+            <td>${standardFreq}</td>
+          </tr>
+          <tr>
+            <td>الطول النظري المطلوب (سم)</td>
+            <td>${L_theoretical.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td>الإشارة</td>
+            <td>${indicator}</td>
+          </tr>`;
+      }
+      
+      tableHTML += `</tbody></table>`;
+      document.getElementById('noteResult').innerHTML = tableHTML;
     }
 
     function frequencyToNoteName(frequency) {
@@ -782,32 +803,6 @@
       return noteName + octave;
     }
     
-    function calculateNote() {
-      let L_cm = parseFloat(document.getElementById('noteLength').value);
-      let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
-      let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
-      let humidity = parseFloat(document.getElementById('noteHumidity').value);
-      let k = parseFloat(document.getElementById('noteCorrection').value); // معامل التصحيح
-      if(isNaN(L_cm) || isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity) || isNaN(k)) {
-        alert("يرجى إدخال جميع القيم بشكل صحيح.");
-        return;
-      }
-      let L = L_cm / 100;
-      let d1 = d1_cm / 100;
-      let d2 = d2_cm / 100;
-      let dEffective = (d1 + d2) / 2;
-      let temperature = 37; // ثابت
-      let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
-      let n = 1;
-      let frequency = (n * v) / (2 * (L + k * dEffective));
-      let note = frequencyToNoteName(frequency);
-      document.getElementById('noteResult').innerHTML = 
-          "سرعة الصوت: " + v.toFixed(2) + " م/ث<br>" +
-          "التردد: " + frequency.toFixed(2) + " هرتز<br>" +
-          "الدرجة الموسيقية: " + note;
-    }
-    
-    // دالة مقارنة النغمة المختارة من القائمة المنسدلة
     const chromaticNotes = {
       "C3": 130.81, "C#3": 138.59, "D3": 146.83, "D#3": 155.56, "E3": 164.81, "F3": 174.61,
       "F#3": 185.00, "G3": 196.00, "G#3": 207.65, "A3": 220.00, "A#3": 233.08, "B3": 246.94,
@@ -817,46 +812,6 @@
       "F#5": 739.99, "G5": 783.99, "G#5": 830.61, "A5": 880.00, "A#5": 932.33, "B5": 987.77,
       "C6": 1046.50
     };
-    
-    function compareNote() {
-      const noteSelect = document.getElementById('noteSelect').value;
-      if (!noteSelect) {
-        document.getElementById('compareResult').innerHTML = "";
-        return;
-      }
-      const standardFreq = chromaticNotes[noteSelect];
-      let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
-      let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
-      let humidity = parseFloat(document.getElementById('noteHumidity').value);
-      let k = parseFloat(document.getElementById('noteCorrection').value);
-      if(isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity) || isNaN(k)) {
-        alert("يرجى إدخال قيم الأقطار والرطوبة ومعامل التصحيح للمقارنة.");
-        return;
-      }
-      let dEffective = ((d1_cm/100) + (d2_cm/100)) / 2;
-      let temperature = 37;
-      let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
-      let L_theoretical = v/(2*standardFreq) - k*dEffective;
-      L_theoretical = L_theoretical * 100; // تحويل للمتر إلى سنتيمتر
-      document.getElementById('compareResult').innerHTML = `
-        <table style="width:100%; border-collapse: collapse; margin-top:10px;">
-          <thead>
-            <tr style="background-color:#ddd; color:#333;">
-              <th>النغمة</th>
-              <th>التردد القياسي (Hz)</th>
-              <th>الطول النظري (سم)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="text-align:center;">
-              <td>${noteSelect}</td>
-              <td>${standardFreq}</td>
-              <td>${L_theoretical.toFixed(2)}</td>
-            </tr>
-          </tbody>
-        </table>
-      `;
-    }
     
     document.addEventListener("DOMContentLoaded", function() {
       setTimeout(() => {
