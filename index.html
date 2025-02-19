@@ -50,8 +50,14 @@
       position: relative;
     }
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     .tabs {
       display: flex;
@@ -217,12 +223,6 @@
     .footer a:hover {
       text-decoration: underline;
     }
-    /* تنسيق عرض عدد المستخدمين الحاليين */
-    .visitor-counter {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #ffd700;
-    }
     @media (max-width: 768px) {
       .result-table {
         grid-template-columns: 1fr;
@@ -231,7 +231,7 @@
         flex-direction: column;
       }
     }
-    /* تنسيق مخصص لقسم السلم المقامي */
+    /* تنسيق خاص لقسم السلم المقامي */
     .scale-selection {
       display: flex;
       justify-content: center;
@@ -277,7 +277,7 @@
     .play-note:hover {
       background-color: var(--hover-bg);
     }
-    /* تنسيق خاص لقسم تحديد درجة الناي والكولة */
+    /* ===== تنسيق خاص لقسم تحديد درجة الناي والكولة ===== */
     #determine {
       padding: 20px 0;
     }
@@ -338,13 +338,6 @@
       font-size: 20px;
       margin-top: 15px;
     }
-    /* تنسيق لملاحظة النتائج */
-    .note {
-      margin-top: 15px;
-      font-size: 16px;
-      color: #ffd700;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
@@ -355,6 +348,7 @@
       <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
       <button class="tab-button" onclick="showTab('determine')">تحديد درجة الناي والكولة</button>
     </div>
+
     <!-- قسم صناعة الناي -->
     <div id="nai" class="tab-content active">
       <div class="section-header">حساب مقاسات الناي - الثقوب والفكوك</div>
@@ -366,6 +360,8 @@
         <button onclick="resetSection('nai')">إعادة تعيين</button>
       </div>
       <div id="naiResults" class="result-section"></div>
+      <!-- ملاحظة رفع الثقب الخلفي تُعرض ضمن النتائج بعد الضغط على "حساب" -->
+      
       <hr style="margin:20px 0; border: 1px solid #444;">
       <div class="section-header">حساب قطر الرداد بناءً على قطر الخزنة</div>
       <p class="tooltip">أدخل قطر الخزنة بالسنتيمتر لحساب قطر الرداد بدقة.</p>
@@ -377,6 +373,7 @@
       </div>
       <div id="radadResult" class="result-section"></div>
     </div>
+
     <!-- قسم صناعة الكولة -->
     <div id="kawala" class="tab-content">
       <div class="section-header">حساب أطوال الفكوك وأماكن الثقوب للكولة</div>
@@ -389,6 +386,7 @@
       </div>
       <div id="kawalaResults" class="result-section"></div>
     </div>
+
     <!-- قسم السلم المقامي -->
     <div id="scale" class="tab-content">
       <div class="section-header">استكشف مقام الراست من كل الدرجات</div>
@@ -414,106 +412,86 @@
       </div>
       <div id="scaleResult" class="result-section scale-result"></div>
     </div>
+
     <!-- قسم تحديد درجة الناي والكولة -->
     <div id="determine" class="tab-content">
       <div class="light-box">
         <h1>حاسبة درجة الناي</h1>
-        <!-- القائمة المنسدلة تظهر فوق مدخل الطول -->
-        <label for="noteSelect">اختر درجة من السلم الكروماتيكي للمقارنة:</label>
-        <select id="noteSelect">
-          <option value="C1">C1 (دو1)</option>
-          <option value="C#1">C#1 (دو#1)</option>
-          <option value="D1">D1 (ري1)</option>
-          <option value="D#1">D#1 (ري#1)</option>
-          <option value="E1">E1 (مي1)</option>
-          <option value="F1">F1 (فا1)</option>
-          <option value="F#1">F#1 (فا#1)</option>
-          <option value="G1">G1 (صول1)</option>
-          <option value="G#1">G#1 (صول#1)</option>
-          <option value="A1">A1 (لا1)</option>
-          <option value="A#1">A#1 (لا#1)</option>
-          <option value="B1">B1 (سي1)</option>
-          <option value="C2">C2 (دو2)</option>
-          <option value="C#2">C#2 (دو#2)</option>
-          <option value="D2">D2 (ري2)</option>
-          <option value="D#2">D#2 (ري#2)</option>
-          <option value="E2">E2 (مي2)</option>
-          <option value="F2">F2 (فا2)</option>
-          <option value="F#2">F#2 (فا#2)</option>
-          <option value="G2">G2 (صول2)</option>
-          <option value="G#2">G#2 (صول#2)</option>
-          <option value="A2">A2 (لا2)</option>
-          <option value="A#2">A#2 (لا#2)</option>
-          <option value="B2">B2 (سي2)</option>
-          <option value="C3">C3 (دو3)</option>
-          <option value="C#3">C#3 (دو#3)</option>
-          <option value="D3">D3 (ري3)</option>
-          <option value="D#3">D#3 (ري#3)</option>
-          <option value="E3">E3 (مي3)</option>
-          <option value="F3">F3 (فا3)</option>
-          <option value="F#3">F#3 (فا#3)</option>
-          <option value="G3">G3 (صول3)</option>
-          <option value="G#3">G#3 (صول#3)</option>
-          <option value="A3">A3 (لا3)</option>
-          <option value="A#3">A#3 (لا#3)</option>
-          <option value="B3">B3 (سي3)</option>
-          <option value="C4">C4 (دو4)</option>
-          <option value="C#4">C#4 (دو#4)</option>
-          <option value="D4">D4 (ري4)</option>
-          <option value="D#4">D#4 (ري#4)</option>
-          <option value="E4">E4 (مي4)</option>
-          <option value="F4">F4 (فا4)</option>
-          <option value="F#4">F#4 (فا#4)</option>
-          <option value="G4">G4 (صول4)</option>
-          <option value="G#4">G#4 (صول#4)</option>
-          <option value="A4">A4 (لا4)</option>
-          <option value="A#4">A#4 (لا#4)</option>
-          <option value="B4">B4 (سي4)</option>
-          <option value="C5">C5 (دو5)</option>
-          <option value="C#5">C#5 (دو#5)</option>
-          <option value="D5">D5 (ري5)</option>
-          <option value="D#5">D#5 (ري#5)</option>
-          <option value="E5">E5 (مي5)</option>
-          <option value="F5">F5 (فا5)</option>
-          <option value="F#5">F#5 (فا#5)</option>
-          <option value="G5">G5 (صول5)</option>
-          <option value="G#5">G#5 (صول#5)</option>
-          <option value="A5">A5 (لا5)</option>
-          <option value="A#5">A#5 (لا#5)</option>
-          <option value="B5">B5 (سي5)</option>
-          <option value="C6">C6 (دو6)</option>
-          <option value="C#6">C#6 (دو#6)</option>
-          <option value="D6">D6 (ري6)</option>
-          <option value="D#6">D#6 (ري#6)</option>
-          <option value="E6">E6 (مي6)</option>
-          <option value="F6">F6 (فا6)</option>
-          <option value="F#6">F#6 (فا#6)</option>
-          <option value="G6">G6 (صول6)</option>
-          <option value="G#6">G#6 (صول#6)</option>
-          <option value="A6">A6 (لا6)</option>
-          <option value="A#6">A#6 (لا#6)</option>
-          <option value="B6">B6 (سي6)</option>
-          <option value="C7">C7 (دو7)</option>
+        <!-- القائمة المنسدلة لمقارنة درجات السلم الكروماتيك تظهر أولاً -->
+        <label for="noteSelect">اختر نغمة من السلم الكروماتيك (C3 - C6):</label>
+        <select id="noteSelect" onchange="compareNote()">
+          <option value="">-- اختر نغمة --</option>
+          <option value="C3">C3</option>
+          <option value="C#3">C#3</option>
+          <option value="D3">D3</option>
+          <option value="D#3">D#3</option>
+          <option value="E3">E3</option>
+          <option value="F3">F3</option>
+          <option value="F#3">F#3</option>
+          <option value="G3">G3</option>
+          <option value="G#3">G#3</option>
+          <option value="A3">A3</option>
+          <option value="A#3">A#3</option>
+          <option value="B3">B3</option>
+          <option value="C4">C4</option>
+          <option value="C#4">C#4</option>
+          <option value="D4">D4</option>
+          <option value="D#4">D#4</option>
+          <option value="E4">E4</option>
+          <option value="F4">F4</option>
+          <option value="F#4">F#4</option>
+          <option value="G4">G4</option>
+          <option value="G#4">G#4</option>
+          <option value="A4">A4</option>
+          <option value="A#4">A#4</option>
+          <option value="B4">B4</option>
+          <option value="C5">C5</option>
+          <option value="C#5">C#5</option>
+          <option value="D5">D5</option>
+          <option value="D#5">D#5</option>
+          <option value="E5">E5</option>
+          <option value="F5">F5</option>
+          <option value="F#5">F#5</option>
+          <option value="G5">G5</option>
+          <option value="G#5">G#5</option>
+          <option value="A5">A5</option>
+          <option value="A#5">A#5</option>
+          <option value="B5">B5</option>
+          <option value="C6">C6</option>
         </select>
-        <!-- مدخلات باقي البيانات -->
+        <!-- بقية المدخلات تظهر بعد القائمة -->
         <label for="noteLength">الطول (L):</label>
         <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
+        
         <label for="noteUpperDiameter">قطر الناي العلوي (d₁):</label>
         <input type="number" id="noteUpperDiameter" step="any" placeholder="مثلاً 1.8">
+        
         <label for="noteLowerDiameter">قطر الناي السفلي (d₂):</label>
         <input type="number" id="noteLowerDiameter" step="any" placeholder="مثلاً 1.55">
+        
         <label for="noteHumidity">الرطوبة النسبية (%):</label>
         <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
+        
+        <!-- ملاحظة حول معاملات التصحيح بخط ولون أوضح -->
+        <p style="font-size:16px; font-weight:bold; color:blue; margin-bottom:5px;">
+          ملاحظة: معامل التصحيح الخاص بالكولة هو 1.75 ومعامل التصحيح الخاص بالناي هو 1.2
+        </p>
+        
+        <label for="noteCorrection">معامل التصحيح (k):</label>
+        <input type="number" id="noteCorrection" step="any" value="0.8">
+        
         <div class="fixed-info">
           <p><strong>درجة الحرارة:</strong> 37°م (ثابت)</p>
-          <p><strong>معامل التصحيح:</strong> 0.8 (ثابت)</p>
         </div>
-        <!-- عند الضغط على الزر يتم حساب الدرجة وعرضها مع التفاصيل -->
+        
         <button onclick="calculateNote()">احسب الدرجة</button>
-        <!-- عرض النتائج داخل عنصر واحد -->
-        <div id="determineResult" style="margin-top:15px; font-size:16px; font-weight:bold;"></div>
+        
+        <h2 id="noteResult"></h2>
+        <!-- هنا تُعرض نتائج مقارنة النغمة -->
+        <div id="compareResult" style="margin-top:15px; font-size:16px;"></div>
       </div>
     </div>
+
     <div class="footer">
       تصميم وتطوير:
       <a href="https://www.facebook.com/kawana667788/" target="_blank">خالد باشا</a>
@@ -523,35 +501,11 @@
       <a href="https://www.facebook.com/groups/501641503562283" target="_blank">جروب تعليم آلة الكولة على الفيسبوك</a>
       <br>
       هذا التطبيق مجاني ولا يسمح ببيعه.
-      <!-- عرض عدد المستخدمين الحاليين بشكل واقعي -->
-      <div class="visitor-counter" id="visitorCounter">عدد المستخدمين الحاليين: 0</div>
     </div>
   </div>
+
   <script>
-    // دالة لتوليد تغيير بسيط بين -3 و +3
-    function getRandomDelta() {
-      return Math.floor(Math.random() * 7) - 3;
-    }
-    // دالة لتوليد فترة تحديث عشوائية من الفترات المحددة (بالملي ثانية)
-    function getRandomInterval() {
-      const intervals = [20000, 30000, 60000, 90000, 120000]; // 20s, 30s, 1m, 1.5m, 2m
-      return intervals[Math.floor(Math.random() * intervals.length)];
-    }
-    // القيمة الأولية للمستخدمين (بين 20 و308)
-    let currentUsers = Math.floor(Math.random() * (308 - 20 + 1)) + 20;
-    // دالة تحديث المستخدمين بشكل واقعي
-    function updateVisitorCounter() {
-      currentUsers += getRandomDelta();
-      if (currentUsers < 20) currentUsers = 20;
-      if (currentUsers > 308) currentUsers = 308;
-      document.getElementById('visitorCounter').innerText = "عدد المستخدمين الحاليين: " + currentUsers;
-      setTimeout(updateVisitorCounter, getRandomInterval());
-    }
-    document.addEventListener("DOMContentLoaded", function() {
-      updateVisitorCounter();
-      setTimeout(() => { document.querySelector('.footer').classList.add('show'); }, 1000);
-    });
-    // كائن لتخزين عناصر الصوت
+    // دوال تشغيل الصوت
     var audioPlayers = {};
     var currentPlaying = null;
     var currentButton = null;
@@ -602,7 +556,10 @@
       "سي نصف بيمول": "https://dl.dropboxusercontent.com/scl/fi/1yy51ldrmkupp6voqzxcv/.mp3?rlkey=j5td5yffe23v3app91fobtiq0",
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
+
     function togglePlay(btn, note) {
+      // تأكد من إزالة الفراغات الزائدة
+      note = note.trim();
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
         audioPlayers[note].pause();
         audioPlayers[note].currentTime = 0;
@@ -629,11 +586,13 @@
         };
       }
     }
+
     function showScale() {
       const selectedScale = document.getElementById("scaleSelect").value;
       const scaleResultDiv = document.getElementById("scaleResult");
       const scaleString = scales[selectedScale] || "السلم غير متوفر";
       const notes = scaleString.split(" - ");
+      
       let html = `<div class="scale-grid">`;
       notes.forEach((note, index) => {
         html += `
@@ -646,12 +605,14 @@
       html += `</div>`;
       scaleResultDiv.innerHTML = html;
     }
+
     function showTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
       document.querySelector(`button[onclick="showTab('${tabName}')"]`).classList.add('active');
     }
+
     function validateInput(inputId) {
       const input = document.getElementById(inputId);
       if (!input.value || parseFloat(input.value) <= 0) {
@@ -662,6 +623,7 @@
         return true;
       }
     }
+
     function calculateAll() {
       if (!validateInput("length")) {
         alert("الرجاء إدخال طول صحيح للناي!");
@@ -707,10 +669,13 @@
           </table>
         </div>
         <button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>
-        <p class="note">ملاحظة: يجب رفع الثقب الخلفي بمقدار 1 سم و2 ملم إلى اتجاه الخزنة.</p>
+        <p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
+          ملاحظة: يجب رفع الثقب الخلفي 1 سم و2 ملم إلى اتجاه الخزنة.
+        </p>
       `;
       document.getElementById("naiResults").innerHTML = resultHTML;
     }
+
     function calculateRadadDiameter() {
       if (!validateInput("khaznaDiameter")) {
         alert("الرجاء إدخال قطر خزنة صحيح!");
@@ -721,6 +686,7 @@
       document.getElementById("radadResult").innerHTML = `<p>قطر الرداد: ${radadDiameter} سم</p>
         <button class="copy-button" onclick="copyResult('radadResult')">نسخ النتيجة</button>`;
     }
+
     function calculateKawala() {
       if (!validateInput("totalLength")) {
         alert("الرجاء إدخال طول الكولة!");
@@ -767,6 +733,7 @@
       `;
       document.getElementById("kawalaResults").innerHTML = resultHTML;
     }
+
     function copyResult(sectionId) {
       const section = document.getElementById(sectionId);
       const range = document.createRange();
@@ -781,6 +748,7 @@
       }
       window.getSelection().removeAllRanges();
     }
+
     function resetSection(sectionId) {
       if(sectionId === 'nai') {
         document.getElementById("length").value = "";
@@ -795,14 +763,17 @@
         removeError("totalLength");
       }
     }
+
     function resetInput(inputId, resultId) {
       document.getElementById(inputId).value = "";
       document.getElementById(resultId).innerHTML = "";
       removeError(inputId);
     }
+
     function removeError(inputId) {
       document.getElementById(inputId).classList.remove('error');
     }
+
     function frequencyToNoteName(frequency) {
       let midiNumber = Math.round(12 * Math.log2(frequency / 440) + 69);
       let noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -810,114 +781,88 @@
       let octave = Math.floor(midiNumber / 12) - 1;
       return noteName + octave;
     }
-    const chromaticFrequencies = {
-      "C1": 32.70,
-      "C#1": 34.65,
-      "D1": 36.71,
-      "D#1": 38.89,
-      "E1": 41.20,
-      "F1": 43.65,
-      "F#1": 46.25,
-      "G1": 49.00,
-      "G#1": 51.91,
-      "A1": 55.00,
-      "A#1": 58.27,
-      "B1": 61.74,
-      "C2": 65.41,
-      "C#2": 69.30,
-      "D2": 73.42,
-      "D#2": 77.78,
-      "E2": 82.41,
-      "F2": 87.31,
-      "F#2": 92.50,
-      "G2": 98.00,
-      "G#2": 103.83,
-      "A2": 110.00,
-      "A#2": 116.54,
-      "B2": 123.47,
-      "C3": 130.81,
-      "C#3": 138.59,
-      "D3": 146.83,
-      "D#3": 155.56,
-      "E3": 164.81,
-      "F3": 174.61,
-      "F#3": 185.00,
-      "G3": 196.00,
-      "G#3": 207.65,
-      "A3": 220.00,
-      "A#3": 233.08,
-      "B3": 246.94,
-      "C4": 261.63,
-      "C#4": 277.18,
-      "D4": 293.66,
-      "D#4": 311.13,
-      "E4": 329.63,
-      "F4": 349.23,
-      "F#4": 369.99,
-      "G4": 392.00,
-      "G#4": 415.30,
-      "A4": 440.00,
-      "A#4": 466.16,
-      "B4": 493.88,
-      "C5": 523.25,
-      "C#5": 554.37,
-      "D5": 587.33,
-      "D#5": 622.25,
-      "E5": 659.26,
-      "F5": 698.46,
-      "F#5": 739.99,
-      "G5": 783.99,
-      "G#5": 830.61,
-      "A5": 880.00,
-      "A#5": 932.33,
-      "B5": 987.77,
-      "C6": 1046.50,
-      "C#6": 1108.73,
-      "D6": 1174.66,
-      "D#6": 1244.51,
-      "E6": 1318.51,
-      "F6": 1396.91,
-      "F#6": 1479.98,
-      "G6": 1567.98,
-      "G#6": 1661.22,
-      "A6": 1760.00,
-      "A#6": 1864.66,
-      "B6": 1975.53,
-      "C7": 2093.00
-    };
+    
     function calculateNote() {
       let L_cm = parseFloat(document.getElementById('noteLength').value);
       let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
       let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
       let humidity = parseFloat(document.getElementById('noteHumidity').value);
-      if(isNaN(L_cm) || isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity)) {
+      let k = parseFloat(document.getElementById('noteCorrection').value); // معامل التصحيح
+      if(isNaN(L_cm) || isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity) || isNaN(k)) {
         alert("يرجى إدخال جميع القيم بشكل صحيح.");
         return;
       }
-      // تحويل القيم إلى أمتار
       let L = L_cm / 100;
       let d1 = d1_cm / 100;
       let d2 = d2_cm / 100;
       let dEffective = (d1 + d2) / 2;
-      let temperature = 37;
-      let k = 0.8;
+      let temperature = 37; // ثابت
       let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
       let n = 1;
-      let computedFrequency = (n * v) / (2 * (L + k * dEffective));
-      let computedNote = frequencyToNoteName(computedFrequency);
-      let selectedNote = document.getElementById('noteSelect').value;
-      let selectedFrequency = chromaticFrequencies[selectedNote];
-      // حساب الطول النظري للدرجة المختارة باستخدام سرعة صوت معيارية 343 م/ث (بدون تأثير الأقطار)
-      let standardV = 343;
-      let noteLengthTheor = (standardV / (2 * selectedFrequency)) * 100;
-      let resultHTML = "";
-      resultHTML += "سرعة الصوت المحسوبة: " + v.toFixed(2) + " م/ث<br>";
-      resultHTML += "التردد المحسوب: " + computedFrequency.toFixed(2) + " هرتز<br>";
-      resultHTML += "الدرجة الموسيقية المحسوبة: " + computedNote + "<br><br>";
-      resultHTML += "تردد الدرجة المختارة (" + selectedNote + "): " + selectedFrequency + " هرتز<br>";
-      resultHTML += "الطول النظري لهذه الدرجة: " + noteLengthTheor.toFixed(2) + " سم";
-      document.getElementById('determineResult').innerHTML = resultHTML;
+      let frequency = (n * v) / (2 * (L + k * dEffective));
+      let note = frequencyToNoteName(frequency);
+      document.getElementById('noteResult').innerHTML = 
+          "سرعة الصوت: " + v.toFixed(2) + " م/ث<br>" +
+          "التردد: " + frequency.toFixed(2) + " هرتز<br>" +
+          "الدرجة الموسيقية: " + note;
     }
+    
+    // دالة مقارنة النغمة المختارة من القائمة المنسدلة
+    const chromaticNotes = {
+      "C3": 130.81, "C#3": 138.59, "D3": 146.83, "D#3": 155.56, "E3": 164.81, "F3": 174.61,
+      "F#3": 185.00, "G3": 196.00, "G#3": 207.65, "A3": 220.00, "A#3": 233.08, "B3": 246.94,
+      "C4": 261.63, "C#4": 277.18, "D4": 293.66, "D#4": 311.13, "E4": 329.63, "F4": 349.23,
+      "F#4": 369.99, "G4": 392.00, "G#4": 415.30, "A4": 440.00, "A#4": 466.16, "B4": 493.88,
+      "C5": 523.25, "C#5": 554.37, "D5": 587.33, "D#5": 622.25, "E5": 659.25, "F5": 698.46,
+      "F#5": 739.99, "G5": 783.99, "G#5": 830.61, "A5": 880.00, "A#5": 932.33, "B5": 987.77,
+      "C6": 1046.50
+    };
+    
+    function compareNote() {
+      const noteSelect = document.getElementById('noteSelect').value;
+      if (!noteSelect) {
+        document.getElementById('compareResult').innerHTML = "";
+        return;
+      }
+      const standardFreq = chromaticNotes[noteSelect];
+      let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
+      let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
+      let humidity = parseFloat(document.getElementById('noteHumidity').value);
+      let k = parseFloat(document.getElementById('noteCorrection').value);
+      if(isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity) || isNaN(k)) {
+        alert("يرجى إدخال قيم الأقطار والرطوبة ومعامل التصحيح للمقارنة.");
+        return;
+      }
+      let dEffective = ((d1_cm/100) + (d2_cm/100)) / 2;
+      let temperature = 37;
+      let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
+      let L_theoretical = v/(2*standardFreq) - k*dEffective;
+      L_theoretical = L_theoretical * 100; // تحويل للمتر إلى سنتيمتر
+      document.getElementById('compareResult').innerHTML = `
+        <table style="width:100%; border-collapse: collapse; margin-top:10px;">
+          <thead>
+            <tr style="background-color:#ddd; color:#333;">
+              <th>النغمة</th>
+              <th>التردد القياسي (Hz)</th>
+              <th>الطول النظري (سم)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="text-align:center;">
+              <td>${noteSelect}</td>
+              <td>${standardFreq}</td>
+              <td>${L_theoretical.toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+      setTimeout(() => {
+        document.querySelector('.footer').classList.add('show');
+      }, 1000);
+    });
   </script>
 </body>
 </html>
