@@ -43,7 +43,7 @@
       background-color: var(--main-bg);
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
       width: 100%;
       max-width: 1000px;
       animation: fadeInUp 1s ease-out;
@@ -370,8 +370,8 @@
 
     <!-- قسم صناعة الكولة -->
     <div id="kawala" class="tab-content">
-      <div class="section-header">حساب أطوال الفكوك وأماكن الثقوب للكولة</div>
-      <p class="tooltip">أدخل الطول الإجمالي للكولة بالسنتيمتر لحساب المواقع والأطوال بدقة.</p>
+      <div class="section-header">حساب مواقع الثقوب وأطوال الفكوك للكولة</div>
+      <p class="tooltip">أدخل الطول الإجمالي للكولة بالسنتيمتر لحساب مواقع الثقوب وأطوال الفكوك بدقة.</p>
       <label for="totalLength">طول الكولة (سم):</label>
       <input type="number" id="totalLength" placeholder="مثال: 56">
       <div class="button-group">
@@ -410,7 +410,6 @@
     <div id="determine" class="tab-content">
       <div class="light-box">
         <h1>حاسبة درجة الناي</h1>
-        <!-- القائمة المنسدلة تظهر في أعلى القسم -->
         <label for="noteSelect">اختر نغمة من السلم الكروماتيك (C3 - C6):</label>
         <select id="noteSelect" onchange="calculateNote()">
           <option value="">-- اختر نغمة --</option>
@@ -452,7 +451,6 @@
           <option value="B5">B5</option>
           <option value="C6">C6</option>
         </select>
-        <!-- باقي المدخلات -->
         <label for="noteLength">الطول (L):</label>
         <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
         
@@ -466,7 +464,7 @@
         <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
         
         <p style="font-size:16px; font-weight:bold; color:blue; margin-bottom:5px;">
-          ملاحظة: معامل التصحيح الخاص بدرجة الراست هو 4.4 ومعامل التصحيح الخاص بدرجة البياتى هو 1.2
+          ملاحظة: معامل التصحيح الخاص بدرجة الراست هو 4.4 ومعامل التصحيح الخاص بدرجة البياتي هو 1.2
         </p>
         
         <label for="noteCorrection">معامل التصحيح (k):</label>
@@ -478,7 +476,6 @@
         
         <button onclick="calculateNote()">احسب الدرجة</button>
         
-        <!-- عرض النتائج داخل جدول واحد -->
         <h2 id="noteResult"></h2>
       </div>
     </div>
@@ -496,7 +493,7 @@
   </div>
 
   <script>
-    // دوال تشغيل الصوت
+    // دالة تشغيل النغمات (النسخة الأصلية التي تعمل في قسم مقام الراست)
     var audioPlayers = {};
     var currentPlaying = null;
     var currentButton = null;
@@ -548,6 +545,22 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
+    // دالة حساب قطر الرداد في قسم صناعة الناي
+    function calculateRadadDiameter() {
+      var khaznaInput = document.getElementById("khaznaDiameter");
+      var resultDiv = document.getElementById("radadResult");
+      var val = parseFloat(khaznaInput.value);
+      if (isNaN(val) || val <= 0) {
+        resultDiv.innerHTML = "<p>الرجاء إدخال قيمة صحيحة لقطر الخزنة.</p>";
+        return;
+      }
+      // حساب قطر الرداد: نطرح 19.1% من قيمة قطر الخزنة
+      var radadDiameter = (val - (val * 0.191)).toFixed(2);
+      resultDiv.innerHTML = "<p>قطر الرداد: " + radadDiameter + " سم</p>" +
+                              "<button class='copy-button' onclick=\"copyResult('radadResult')\">نسخ النتيجة</button>";
+    }
+
+    // دالة تشغيل النغمات (نسخة تعمل بشكل سليم لقسم مقام الراست)
     function togglePlay(btn, note) {
       note = note.trim();
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
@@ -613,6 +626,31 @@
       }
     }
 
+    function resetSection(sectionId) {
+      document.getElementById(sectionId).querySelectorAll('input').forEach(input => input.value = '');
+      document.getElementById(sectionId).querySelectorAll('.result-section').forEach(div => div.innerHTML = '');
+    }
+
+    function resetInput(inputId, resultId) {
+      document.getElementById(inputId).value = '';
+      document.getElementById(resultId).innerHTML = '';
+    }
+
+    // دالة لنسخ النتائج
+    function copyResult(elementId) {
+      var range = document.createRange();
+      range.selectNode(document.getElementById(elementId));
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      try {
+        document.execCommand('copy');
+        alert('تم نسخ النتائج');
+      } catch(err) {
+        alert('تعذر النسخ');
+      }
+      window.getSelection().removeAllRanges();
+    }
+
     // قسم صناعة الناي: حساب الثقوب وأطوال الفكوك
     function calculateAll() {
       if (!validateInput("length")) {
@@ -667,32 +705,27 @@
       document.getElementById("naiResults").innerHTML = tableHTML;
     }
 
-    // دالة حساب قطر الرداد بناءً على قطر الخزنة
-    function calculateRadadDiameter() {
-      if (!validateInput("khaznaDiameter")) {
-        alert("الرجاء إدخال قطر خزنة صحيح!");
-        return;
-      }
-      const khaznaDiameter = parseFloat(document.getElementById("khaznaDiameter").value);
-      const radadDiameter = (khaznaDiameter - (khaznaDiameter * 0.191)).toFixed(2);
-      document.getElementById("radadResult").innerHTML = `<p>قطر الرداد: ${radadDiameter} سم</p>
-        <button class="copy-button" onclick="copyResult('radadResult')">نسخ النتيجة</button>`;
-    }
-
-    // قسم صناعة الكولة: حساب الثقوب وأطوال الفكوك
+    // قسم صناعة الكولة: حساب مواقع الثقوب وأطوال الفكوك
     function calculateKawala() {
-      if (!validateInput("totalLength")) {
-        alert("الرجاء إدخال طول الكولة!");
+      let totalLength = parseFloat(document.getElementById('totalLength').value);
+      if (isNaN(totalLength) || totalLength <= 0) {
+        document.getElementById('kawalaResults').innerHTML = '<p>الرجاء إدخال قيمة صحيحة لطول الكولة.</p>';
         return;
       }
-      const totalLength = parseFloat(document.getElementById("totalLength").value);
+      
+      // حساب مواقع الثقوب باستخدام النسب الأصلية من كولة طولها 56 سم
       const holePositionsRatios = [8.6/56, 12.9/56, 17.2/56, 23.5/56, 27.8/56, 32.1/56];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
-      const jawRatios = [1.9, 14.3, 14.8, 16.4, 8.6];
-      const sumJawRatios = jawRatios.reduce((a, b) => a + b, 0);
-      const jawLengths = jawRatios.map(ratio => ((ratio / sumJawRatios) * totalLength).toFixed(2));
-      const jawNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "فك الخزنة"];
-      
+
+      // حساب أطوال الفكوك باستخدام النسب الثابتة بناءً على كولة طولها 40 سم
+      const jawRatios = {
+        'فك الرداد': 2.5 / 40,
+        'الفك الثاني': 9.1 / 40,
+        'الفك الثالث': 10.65 / 40,
+        'الفك الرابع': 12.55 / 40,
+        'فك الخزنة': 5.2 / 40
+      };
+
       let tableHTML = `<div class="result-table">
         <table style="width:100%; border-collapse: collapse;">
           <thead>
@@ -706,11 +739,13 @@
               <td>طول الكولة</td>
               <td>${totalLength}</td>
             </tr>`;
+      // إضافة صفوف مواقع الثقوب
       for (let i = 0; i < holes.length; i++) {
         tableHTML += `<tr><td>الثقب ${i+1}</td><td>${holes[i]}</td></tr>`;
       }
       tableHTML += `</tbody></table>`;
       
+      // إضافة جدول للفكوك
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
@@ -719,16 +754,17 @@
             </tr>
           </thead>
           <tbody>`;
-      for (let i = 0; i < jawLengths.length; i++) {
-        tableHTML += `<tr><td>${jawNames[i]}</td><td>${jawLengths[i]}</td></tr>`;
+      for (const [jaw, ratio] of Object.entries(jawRatios)) {
+          let jawLength = totalLength * ratio;
+          tableHTML += `<tr><td>${jaw}</td><td>${jawLength.toFixed(2)}</td></tr>`;
       }
       tableHTML += `</tbody></table></div>
       <button class="copy-button" onclick="copyResult('kawalaResults')">نسخ النتائج</button>`;
       
-      document.getElementById("kawalaResults").innerHTML = tableHTML;
+      document.getElementById('kawalaResults').innerHTML = tableHTML;
     }
 
-    // قسم تحديد درجة الناي والكولة: حساب النتائج المجمعة داخل جدول واحد
+    // قسم تحديد درجة الناي والكولة: حساب النتائج داخل جدول واحد
     function calculateNote() {
       let L_cm = parseFloat(document.getElementById('noteLength').value);
       let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
