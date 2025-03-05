@@ -410,46 +410,47 @@
     <div id="determine" class="tab-content">
       <div class="light-box">
         <h1>حاسبة درجة الناي</h1>
+        <!-- تعديل القائمة المنسدلة لتظهر النغمات باستخدام do, re, me, fa... -->
         <label for="noteSelect">اختر نغمة من السلم الكروماتيك (C3 - C6):</label>
         <select id="noteSelect" onchange="calculateNote()">
           <option value="">-- اختر نغمة --</option>
-          <option value="C3">C3</option>
-          <option value="C#3">C#3</option>
-          <option value="D3">D3</option>
-          <option value="D#3">D#3</option>
-          <option value="E3">E3</option>
-          <option value="F3">F3</option>
-          <option value="F#3">F#3</option>
-          <option value="G3">G3</option>
-          <option value="G#3">G#3</option>
-          <option value="A3">A3</option>
-          <option value="A#3">A#3</option>
-          <option value="B3">B3</option>
-          <option value="C4">C4</option>
-          <option value="C#4">C#4</option>
-          <option value="D4">D4</option>
-          <option value="D#4">D#4</option>
-          <option value="E4">E4</option>
-          <option value="F4">F4</option>
-          <option value="F#4">F#4</option>
-          <option value="G4">G4</option>
-          <option value="G#4">G#4</option>
-          <option value="A4">A4</option>
-          <option value="A#4">A#4</option>
-          <option value="B4">B4</option>
-          <option value="C5">C5</option>
-          <option value="C#5">C#5</option>
-          <option value="D5">D5</option>
-          <option value="D#5">D#5</option>
-          <option value="E5">E5</option>
-          <option value="F5">F5</option>
-          <option value="F#5">F#5</option>
-          <option value="G5">G5</option>
-          <option value="G#5">G#5</option>
-          <option value="A5">A5</option>
-          <option value="A#5">A#5</option>
-          <option value="B5">B5</option>
-          <option value="C6">C6</option>
+          <option value="C3">do3</option>
+          <option value="C#3">do#3</option>
+          <option value="D3">re3</option>
+          <option value="D#3">re#3</option>
+          <option value="E3">me3</option>
+          <option value="F3">fa3</option>
+          <option value="F#3">fa#3</option>
+          <option value="G3">sol3</option>
+          <option value="G#3">sol#3</option>
+          <option value="A3">la3</option>
+          <option value="A#3">la#3</option>
+          <option value="B3">si3</option>
+          <option value="C4">do4</option>
+          <option value="C#4">do#4</option>
+          <option value="D4">re4</option>
+          <option value="D#4">re#4</option>
+          <option value="E4">me4</option>
+          <option value="F4">fa4</option>
+          <option value="F#4">fa#4</option>
+          <option value="G4">sol4</option>
+          <option value="G#4">sol#4</option>
+          <option value="A4">la4</option>
+          <option value="A#4">la#4</option>
+          <option value="B4">si4</option>
+          <option value="C5">do5</option>
+          <option value="C#5">do#5</option>
+          <option value="D5">re5</option>
+          <option value="D#5">re#5</option>
+          <option value="E5">me5</option>
+          <option value="F5">fa5</option>
+          <option value="F#5">fa#5</option>
+          <option value="G5">sol5</option>
+          <option value="G#5">sol#5</option>
+          <option value="A5">la5</option>
+          <option value="A#5">la#5</option>
+          <option value="B5">si5</option>
+          <option value="C6">do6</option>
         </select>
         <label for="noteLength">الطول (L):</label>
         <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
@@ -545,7 +546,41 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
-    // دالة حساب قطر الرداد في قسم صناعة الناي
+    // دالة تحويل النغمة من صيغة "C3" إلى الصيغة المطلوبة "do3"
+    function convertToDoReMe(note) {
+      let pattern = /^([A-G]#?)(\d)$/;
+      let match = note.match(pattern);
+      if(match) {
+        let letter = match[1];
+        let octave = match[2];
+        let mapping = {
+          "C": "do",
+          "C#": "do#",
+          "D": "re",
+          "D#": "re#",
+          "E": "me",
+          "F": "fa",
+          "F#": "fa#",
+          "G": "sol",
+          "G#": "sol#",
+          "A": "la",
+          "A#": "la#",
+          "B": "si"
+        };
+        return mapping[letter] + octave;
+      }
+      return note;
+    }
+
+    // دالة تحويل التردد إلى اسم النغمة باستخدام الحروف المطلوبة
+    function frequencyToNoteName(frequency) {
+      let midiNumber = Math.round(12 * Math.log2(frequency / 440) + 69);
+      let noteNames = ["do", "do#", "re", "re#", "me", "fa", "fa#", "sol", "sol#", "la", "la#", "si"];
+      let noteName = noteNames[midiNumber % 12];
+      let octave = Math.floor(midiNumber / 12) - 1;
+      return noteName + octave;
+    }
+    
     function calculateRadadDiameter() {
       var khaznaInput = document.getElementById("khaznaDiameter");
       var resultDiv = document.getElementById("radadResult");
@@ -554,13 +589,11 @@
         resultDiv.innerHTML = "<p>الرجاء إدخال قيمة صحيحة لقطر الخزنة.</p>";
         return;
       }
-      // حساب قطر الرداد: نطرح 19.1% من قيمة قطر الخزنة
       var radadDiameter = (val - (val * 0.191)).toFixed(2);
       resultDiv.innerHTML = "<p>قطر الرداد: " + radadDiameter + " سم</p>" +
                               "<button class='copy-button' onclick=\"copyResult('radadResult')\">نسخ النتيجة</button>";
     }
 
-    // دالة تشغيل النغمات (نسخة تعمل بشكل سليم لقسم مقام الراست)
     function togglePlay(btn, note) {
       note = note.trim();
       if (currentPlaying === note && audioPlayers[note] && !audioPlayers[note].paused) {
@@ -636,7 +669,6 @@
       document.getElementById(resultId).innerHTML = '';
     }
 
-    // دالة لنسخ النتائج
     function copyResult(elementId) {
       var range = document.createRange();
       range.selectNode(document.getElementById(elementId));
@@ -651,7 +683,6 @@
       window.getSelection().removeAllRanges();
     }
 
-    // قسم صناعة الناي: حساب الثقوب وأطوال الفكوك
     function calculateAll() {
       if (!validateInput("length")) {
         alert("الرجاء إدخال طول صحيح للناي!");
@@ -705,7 +736,6 @@
       document.getElementById("naiResults").innerHTML = tableHTML;
     }
 
-    // قسم صناعة الكولة: حساب مواقع الثقوب وأطوال الفكوك
     function calculateKawala() {
       let totalLength = parseFloat(document.getElementById('totalLength').value);
       if (isNaN(totalLength) || totalLength <= 0) {
@@ -713,11 +743,9 @@
         return;
       }
       
-      // حساب مواقع الثقوب باستخدام النسب الأصلية من كولة طولها 56 سم
       const holePositionsRatios = [8.6/56, 12.9/56, 17.2/56, 23.5/56, 27.8/56, 32.1/56];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
 
-      // حساب أطوال الفكوك باستخدام النسب الثابتة بناءً على كولة طولها 40 سم
       const jawRatios = {
         'فك الرداد': 2.5 / 40,
         'الفك الثاني': 9.1 / 40,
@@ -739,13 +767,11 @@
               <td>طول الكولة</td>
               <td>${totalLength}</td>
             </tr>`;
-      // إضافة صفوف مواقع الثقوب
       for (let i = 0; i < holes.length; i++) {
         tableHTML += `<tr><td>الثقب ${i+1}</td><td>${holes[i]}</td></tr>`;
       }
       tableHTML += `</tbody></table>`;
       
-      // إضافة جدول للفكوك
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
@@ -764,7 +790,6 @@
       document.getElementById('kawalaResults').innerHTML = tableHTML;
     }
 
-    // قسم تحديد درجة الناي والكولة: حساب النتائج داخل جدول واحد
     function calculateNote() {
       let L_cm = parseFloat(document.getElementById('noteLength').value);
       let d1_cm = parseFloat(document.getElementById('noteUpperDiameter').value);
@@ -812,9 +837,11 @@
         let L_theoretical = v / (2 * standardFreq) - k * dEffective;
         L_theoretical = L_theoretical * 100;
         let indicator = computedFreq > standardFreq ? "العلامة مرتفعة" : "العلامة منخفضة";
+        // تحويل النغمة المختارة إلى الصيغة المطلوبة
+        let noteSelectDisplay = convertToDoReMe(noteSelect);
         tableHTML += `
           <tr>
-            <td>التردد القياسي (${noteSelect}) (Hz)</td>
+            <td>التردد القياسي (${noteSelectDisplay}) (Hz)</td>
             <td>${standardFreq}</td>
           </tr>
           <tr>
@@ -829,14 +856,6 @@
       
       tableHTML += `</tbody></table>`;
       document.getElementById('noteResult').innerHTML = tableHTML;
-    }
-
-    function frequencyToNoteName(frequency) {
-      let midiNumber = Math.round(12 * Math.log2(frequency / 440) + 69);
-      let noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-      let noteName = noteNames[midiNumber % 12];
-      let octave = Math.floor(midiNumber / 12) - 1;
-      return noteName + octave;
     }
     
     const chromaticNotes = {
