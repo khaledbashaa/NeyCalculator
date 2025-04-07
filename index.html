@@ -689,8 +689,35 @@
         return;
       }
       const totalLength = parseFloat(document.getElementById("length").value);
-      const holePositionsRatios = [7.3/53, 9.7/53, 12.1/53, 16.9/53, 19.3/53, 21.5/53, 0.5];
-      const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
+      
+      // --- حساب مواقع الثقوب باستخدام الكود الجديد ---
+      const division = totalLength / 8;
+      const step = division / 3;
+      const holes = [];
+      holes.push({ hole: 1, position: division + 1 }); // الثقب الأول
+      holes.push({ hole: 2, position: holes[0].position + step });
+      holes.push({ hole: 3, position: holes[1].position + step });
+      holes.push({ hole: 4, position: holes[2].position + (step * 2) });
+      holes.push({ hole: 5, position: holes[3].position + step });
+      holes.push({ hole: 6, position: holes[4].position + step });
+      const backHole = totalLength / 2;
+      
+      let holesHTML = `<table style="width:100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background-color:#ddd; color:#333;">
+            <th>الثقب</th>
+            <th>المسافة (سم)</th>
+          </tr>
+        </thead>
+        <tbody>`;
+      holes.forEach(h => {
+        holesHTML += `<tr><td>الثقب ${h.hole}</td><td>${h.position.toFixed(2)}</td></tr>`;
+      });
+      holesHTML += `<tr><td>الثقب الخلفي (السابع)</td><td>${backHole.toFixed(2)}</td></tr>`;
+      holesHTML += `</tbody></table>`;
+      // --- نهاية تعديل الثقوب ---
+      
+      // حساب أطوال الفكوك كما هو في الكود الأصلي
       const originalNaiLength = 59.2;
       const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
       const ratioValue = totalLength / originalNaiLength;
@@ -709,11 +736,11 @@
             <tr>
               <td>طول الناي</td>
               <td>${totalLength}</td>
-            </tr>`;
-      for (let i = 0; i < holes.length; i++) {
-        tableHTML += `<tr><td>الثقب ${i+1}${i===6 ? " (الخلفي)" : ""}</td><td>${holes[i]}</td></tr>`;
-      }
-      tableHTML += `</tbody></table>`;
+            </tr>
+          </tbody>
+        </table>`;
+      
+      tableHTML += holesHTML;
       
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
