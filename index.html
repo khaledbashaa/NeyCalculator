@@ -717,13 +717,7 @@
       holesHTML += `</tbody></table>`;
       // --- نهاية تعديل الثقوب ---
       
-      // حساب أطوال الفكوك كما هو في الكود الأصلي
-      const originalNaiLength = 59.2;
-      const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9];
-      const ratioValue = totalLength / originalNaiLength;
-      const newFukuk = originalFukuk.map(length => (length * ratioValue).toFixed(2));
-      const fukukNames = ["الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "الفك الخامس", "الفك السادس", "الفك السابع", "الفك الثامن", "الخزنة"];
-      
+      // حساب طول الناي وعرض النتيجة مع الثقوب
       let tableHTML = `<div class="result-table">
         <table style="width:100%; border-collapse: collapse;">
           <thead>
@@ -742,6 +736,7 @@
       
       tableHTML += holesHTML;
       
+      // -------- استبدال كود حساب أطوال الفكوك بالكود الجديد --------
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
@@ -750,10 +745,23 @@
             </tr>
           </thead>
           <tbody>`;
-      for (let i = 0; i < newFukuk.length; i++) {
-        tableHTML += `<tr><td>${fukukNames[i]}</td><td>${newFukuk[i]}</td></tr>`;
-      }
+      // الأطوال الأصلية للفكوك عند طول 42 سم
+      const originalLengths = [5.1, 4.21, 4.39, 4.50, 4.7, 4.95, 5.15, 5.2, 3.8];
+      const totalOriginal = 42; // سم
+      originalLengths.forEach((length, index) => {
+        const newLength = (length / totalOriginal) * totalLength;
+        let name = ""; 
+        if(index === 0) {
+          name = "فك الرداد";
+        } else if(index === 8) {
+          name = "فك الخزنة";
+        } else {
+          name = "الفك " + (index + 1);
+        }
+        tableHTML += `<tr><td>${name}</td><td>${newLength.toFixed(2)}</td></tr>`;
+      });
       tableHTML += `</tbody></table></div>`;
+      // -------- نهاية كود حساب أطوال الفكوك --------
       
       tableHTML += `<p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
           ملاحظة: يجب رفع الثقب الخلفي 1 سم و2 ملم إلى اتجاه الخزنة.
