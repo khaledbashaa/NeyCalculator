@@ -53,6 +53,18 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .lang-switcher {
+      text-align: left;
+      margin-bottom: 10px;
+    }
+    .lang-switcher select {
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid var(--input-border);
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
     .tabs {
       display: flex;
       justify-content: center;
@@ -337,54 +349,64 @@
 </head>
 <body>
   <div class="container">
+    <!-- مفتاح تغيير اللغة -->
+    <div class="lang-switcher">
+      <label for="langSelect" style="font-size:14px;">Language / Dil / اللغة:</label>
+      <select id="langSelect" onchange="setLanguage(this.value)">
+        <option value="ar" selected>العربية</option>
+        <option value="en">English</option>
+        <option value="tr">Türkçe</option>
+      </select>
+    </div>
+
     <div class="tabs">
-      <button class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
-      <button class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
-      <button class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
-      <button class="tab-button" onclick="showTab('determine')">تحديد درجة الناي والكولة</button>
+      <button id="tabBtn_nai" class="tab-button active" onclick="showTab('nai')">صناعة الناي</button>
+      <button id="tabBtn_kawala" class="tab-button" onclick="showTab('kawala')">صناعة الكولة</button>
+      <button id="tabBtn_scale" class="tab-button" onclick="showTab('scale')">مقام الراست من كل الدرجات</button>
+      <button id="tabBtn_determine" class="tab-button" onclick="showTab('determine')">تحديد درجة الناي والكولة</button>
     </div>
 
     <!-- قسم صناعة الناي -->
     <div id="nai" class="tab-content active">
-      <div class="section-header">حساب مقاسات الناي - الثقوب والفكوك</div>
-      <p class="tooltip">أدخل الطول الإجمالي للناي بالسنتيمتر. ستظهر لك المواقع الدقيقة للثقوب وأطوال الفكوك.</p>
-      <label for="length">طول الناي (سم):</label>
+      <div class="section-header" id="sectionHeader_nai">حساب مقاسات الناي - الثقوب والفكوك</div>
+      <p class="tooltip" id="tooltip_nai">أدخل الطول الإجمالي للناي بالسنتيمتر. ستظهر لك المواقع الدقيقة للثقوب وأطوال الفكوك.</p>
+      <label for="length" id="label_length">طول الناي (سم):</label>
       <input type="number" id="length" placeholder="مثال: 53">
       <div class="button-group">
-        <button onclick="calculateAll()">حساب</button>
-        <button onclick="resetSection('nai')">إعادة تعيين</button>
+        <button onclick="calculateAll()" id="btn_calculate">حساب</button>
+        <button onclick="resetSection('nai')" id="btn_reset">إعادة تعيين</button>
       </div>
       <div id="naiResults" class="result-section"></div>
       
       <hr style="margin:20px 0; border: 1px solid #444;">
-      <div class="section-header">حساب قطر الرداد بناءً على قطر الخزنة</div>
-      <p class="tooltip">أدخل قطر الخزنة بالسنتيمتر لحساب قطر الرداد بدقة.</p>
-      <label for="khaznaDiameter">قطر الخزنة (سم):</label>
+      <div class="section-header" id="sectionHeader_radad">حساب قطر الرداد بناءً على قطر الخزنة</div>
+      <p class="tooltip" id="tooltip_radad">أدخل قطر الخزنة بالسنتيمتر لحساب قطر الرداد بدقة.</p>
+      <label for="khaznaDiameter" id="label_khazna">قطر الخزنة (سم):</label>
       <input type="number" id="khaznaDiameter" placeholder="مثال: 1.8">
       <div class="button-group">
-        <button onclick="calculateRadadDiameter()">حساب قطر الرداد</button>
-        <button onclick="resetInput('khaznaDiameter','radadResult')">إعادة تعيين</button>
+        <button onclick="calculateRadadDiameter()" id="btn_calculate_radad">حساب قطر الرداد</button>
+        <button onclick="resetInput('khaznaDiameter','radadResult')" id="btn_reset_radad">إعادة تعيين</button>
       </div>
       <div id="radadResult" class="result-section"></div>
     </div>
 
     <!-- قسم صناعة الكولة -->
     <div id="kawala" class="tab-content">
-      <div class="section-header">حساب مواقع الثقوب وأطوال الفكوك للكولة</div>
-      <p class="tooltip">أدخل الطول الإجمالي للكولة بالسنتيمتر لحساب مواقع الثقوب وأطوال الفكوك بدقة.</p>
-      <label for="totalLength">طول الكولة (سم):</label>
+      <div class="section-header" id="sectionHeader_kawala">حساب مواقع الثقوب وأطوال الفكوك للكولة</div>
+      <p class="tooltip" id="tooltip_kawala">أدخل الطول الإجمالي للكولة بالسنتيمتر لحساب مواقع الثقوب وأطوال الفكوك بدقة.</p>
+      <label for="totalLength" id="label_totalLength">طول الكولة (سم):</label>
       <input type="number" id="totalLength" placeholder="مثال: 56">
       <div class="button-group">
-        <button onclick="calculateKawala()">حساب</button>
-        <button onclick="resetSection('kawala')">إعادة تعيين</button>
+        <button onclick="calculateKawala()" id="btn_calculate_kawala">حساب</button>
+        <button onclick="resetSection('kawala')" id="btn_reset_kawala">إعادة تعيين</button>
       </div>
       <div id="kawalaResults" class="result-section"></div>
     </div>
 
     <!-- قسم السلم المقامي -->
     <div id="scale" class="tab-content">
-      <div class="section-header">استكشف مقام الراست من كل الدرجات</div>
-      <p class="tooltip">اختر الدرجة الموسيقية لعرض السلم المقامي الخاص بها مع معلومات مفصلة عن النغمات والفواصل.</p>
+      <div class="section-header" id="sectionHeader_scale">استكشف مقام الراست من كل الدرجات</div>
+      <p class="tooltip" id="tooltip_scale">اختر الدرجة الموسيقية لعرض السلم المقامي الخاص بها مع معلومات مفصلة عن النغمات والفواصل.</p>
       <div class="scale-selection">
         <select id="scaleSelect">
           <option value="دو">دو</option>
@@ -401,7 +423,7 @@
           <option value="سي">سي</option>
           <option value="علامات الثلاث ارباع">علامات الثلاث ارباع</option>
         </select>
-        <button onclick="showScale()" class="tab-button scale-btn">عرض السلم</button>
+        <button onclick="showScale()" class="tab-button scale-btn" id="btn_showScale">عرض السلم</button>
       </div>
       <div id="scaleResult" class="result-section scale-result"></div>
     </div>
@@ -409,9 +431,8 @@
     <!-- قسم تحديد درجة الناي والكولة -->
     <div id="determine" class="tab-content">
       <div class="light-box">
-        <h1>تحديد درجة الكوله والناي</h1>
-        <!-- تعديل القائمة المنسدلة لتظهر النغمات باستخدام do, re, me, fa... -->
-        <label for="noteSelect">اختر نغمة من السلم الكروماتيك (DO3 - DO6):</label>
+        <h1 id="header_determine">تحديد درجة الكوله والناي</h1>
+        <label for="noteSelect" id="label_noteSelect">اختر نغمة من السلم الكروماتيك (DO3 - DO6):</label>
         <select id="noteSelect" onchange="calculateNote()">
           <option value="">-- اختر نغمة --</option>
           <option value="C3">do3</option>
@@ -452,30 +473,30 @@
           <option value="B5">si5</option>
           <option value="C6">do6</option>
         </select>
-        <label for="noteLength">الطول (L):</label>
+        <label for="noteLength" id="label_noteLength">الطول (L):</label>
         <input type="number" id="noteLength" step="any" placeholder="مثلاً 49.8">
         
-        <label for="noteUpperDiameter">قطر الناي العلوي (d₁):</label>
+        <label for="noteUpperDiameter" id="label_noteUpperDiameter">قطر الناي العلوي (d₁):</label>
         <input type="number" id="noteUpperDiameter" step="any" placeholder="مثلاً 1.8">
         
-        <label for="noteLowerDiameter">قطر الناي السفلي (d₂):</label>
+        <label for="noteLowerDiameter" id="label_noteLowerDiameter">قطر الناي السفلي (d₂):</label>
         <input type="number" id="noteLowerDiameter" step="any" placeholder="مثلاً 1.55">
         
-        <label for="noteHumidity">الرطوبة النسبية (%):</label>
+        <label for="noteHumidity" id="label_noteHumidity">الرطوبة النسبية (%):</label>
         <input type="number" id="noteHumidity" step="any" placeholder="مثلاً 50">
         
-        <p style="font-size:16px; font-weight:bold; color:blue; margin-bottom:5px;">
+        <p id="noteCorrectionInfo" style="font-size:16px; font-weight:bold; color:blue; margin-bottom:5px;">
           ملاحظة: معامل التصحيح الخاص بدرجة الراست هو 4.9 ومعامل التصحيح الخاص بدرجة البياتي هو 1.2
         </p>
         
-        <label for="noteCorrection">معامل التصحيح (k):</label>
+        <label for="noteCorrection" id="label_noteCorrection">معامل التصحيح (k):</label>
         <input type="number" id="noteCorrection" step="any" value="0.8">
         
         <div class="fixed-info">
-          <p><strong>درجة الحرارة:</strong> 37°م (ثابت)</p>
+          <p><strong id="fixed_temperature_label">درجة الحرارة:</strong> 37°م (ثابت)</p>
         </div>
         
-        <button onclick="calculateNote()">احسب الدرجة</button>
+        <button onclick="calculateNote()" id="btn_calculate_note">احسب الدرجة</button>
         
         <h2 id="noteResult"></h2>
       </div>
@@ -494,7 +515,198 @@
   </div>
 
   <script>
-    // دالة تشغيل النغمات (النسخة الأصلية التي تعمل في قسم مقام الراست)
+    // كائن الترجمات بعدة لغات: العربية (افتراضية) – English – Türkçe
+    const translations = {
+      ar: {
+        tab1: "صناعة الناي",
+        tab2: "صناعة الكولة",
+        tab3: "مقام الراست من كل الدرجات",
+        tab4: "تحديد درجة الناي والكولة",
+        naiSectionHeader: "حساب مقاسات الناي - الثقوب والفكوك",
+        tooltip_nai: "أدخل الطول الإجمالي للناي بالسنتيمتر. ستظهر لك المواقع الدقيقة للثقوب وأطوال الفكوك.",
+        label_length: "طول الناي (سم):",
+        btn_calculate: "حساب",
+        btn_reset: "إعادة تعيين",
+        sectionHeader_radad: "حساب قطر الرداد بناءً على قطر الخزنة",
+        tooltip_radad: "أدخل قطر الخزنة بالسنتيمتر لحساب قطر الرداد بدقة.",
+        label_khazna: "قطر الخزنة (سم):",
+        btn_calculate_radad: "حساب قطر الرداد",
+        btn_reset_radad: "إعادة تعيين",
+        sectionHeader_kawala: "حساب مواقع الثقوب وأطوال الفكوك للكولة",
+        tooltip_kawala: "أدخل الطول الإجمالي للكولة بالسنتيمتر لحساب مواقع الثقوب وأطوال الفكوك بدقة.",
+        label_totalLength: "طول الكولة (سم):",
+        btn_calculate_kawala: "حساب",
+        btn_reset_kawala: "إعادة تعيين",
+        sectionHeader_scale: "استكشف مقام الراست من كل الدرجات",
+        tooltip_scale: "اختر الدرجة الموسيقية لعرض السلم المقامي الخاص بها مع معلومات مفصلة عن النغمات والفواصل.",
+        btn_showScale: "عرض السلم",
+        header_determine: "تحديد درجة الكوله والناي",
+        label_noteSelect: "اختر نغمة من السلم الكروماتيك (DO3 - DO6):",
+        label_noteLength: "الطول (L):",
+        label_noteUpperDiameter: "قطر الناي العلوي (d₁):",
+        label_noteLowerDiameter: "قطر الناي السفلي (d₂):",
+        label_noteHumidity: "الرطوبة النسبية (%):",
+        noteCorrectionInfo: "ملاحظة: معامل التصحيح الخاص بدرجة الراست هو 4.9 ومعامل التصحيح الخاص بدرجة البياتي هو 1.2",
+        label_noteCorrection: "معامل التصحيح (k):",
+        btn_calculate_note: "احسب الدرجة",
+        fixed_temperature_label: "درجة الحرارة:",
+        copyResults: "نسخ النتائج",
+        footerText: "تصميم وتطوير: خالد باشا و بدر محمد - جروب تعليم آلة الكولة على الفيسبوك<br>هذا التطبيق مجاني ولا يسمح ببيعه.",
+        // الإضافات الخاصة بأسماء العناصر الحسابية:
+        hole: "الثقب",
+        backHole: "الثقب الخلفي (السابع)",
+        nai_length: "طول الناي",
+        jaw_radad: "فك الرداد",
+        jaw_khazna: "فك الخزنة",
+        jaw: "الفك",
+        nayi_jaw_names: ["فك الرداد", "الفك 2", "الفك 3", "الفك 4", "الفك 5", "الفك 6", "الفك 7", "الفك 8", "فك الخزنة"],
+        kawala_jaw_names: ["فك الرداد", "الفك الثاني", "الفك الثالث", "الفك الرابع", "فك الخزنة"]
+      },
+      en: {
+        tab1: "Make Nayi",
+        tab2: "Make Kawala",
+        tab3: "Maqam Rast from All Notes",
+        tab4: "Determine Nayi & Kawala Note",
+        naiSectionHeader: "Calculate Nayi Dimensions - Holes and Segments",
+        tooltip_nai: "Enter the total length of Nayi in centimeters. Precise positions of finger holes and segments will be shown.",
+        label_length: "Nayi Length (cm):",
+        btn_calculate: "Calculate",
+        btn_reset: "Reset",
+        sectionHeader_radad: "Calculate Radad Diameter Based on Khazna Diameter",
+        tooltip_radad: "Enter Khazna diameter in centimeters to accurately calculate the Radad diameter.",
+        label_khazna: "Khazna Diameter (cm):",
+        btn_calculate_radad: "Calculate Radad Diameter",
+        btn_reset_radad: "Reset",
+        sectionHeader_kawala: "Calculate Kawala Holes and Segment Lengths",
+        tooltip_kawala: "Enter the total length of Kawala in centimeters to accurately calculate hole positions and segment lengths.",
+        label_totalLength: "Kawala Length (cm):",
+        btn_calculate_kawala: "Calculate",
+        btn_reset_kawala: "Reset",
+        sectionHeader_scale: "Explore Maqam Rast from All Notes",
+        tooltip_scale: "Select a musical key to display its scale with detailed information on notes and intervals.",
+        btn_showScale: "Show Scale",
+        header_determine: "Determine Nayi & Kawala Note",
+        label_noteSelect: "Select a note from the chromatic scale (DO3 - DO6):",
+        label_noteLength: "Length (L):",
+        label_noteUpperDiameter: "Upper Nayi Diameter (d₁):",
+        label_noteLowerDiameter: "Lower Nayi Diameter (d₂):",
+        label_noteHumidity: "Relative Humidity (%):",
+        noteCorrectionInfo: "Note: Correction factor for Maqam Rast is 4.9 and for Bayati is 1.2",
+        label_noteCorrection: "Correction Factor (k):",
+        btn_calculate_note: "Calculate Note",
+        fixed_temperature_label: "Temperature:",
+        copyResults: "Copy Results",
+        footerText: "Designed & Developed by: Khaled Pasha and Badr Mohamed - Facebook Group: Learn Kawala Instrument<br>This app is free and may not be sold.",
+        // New translation keys for table results:
+        hole: "Hole",
+        backHole: "Back Hole (Seventh)",
+        nai_length: "Nayi Length",
+        jaw_radad: "Radad Jaw",
+        jaw_khazna: "Khazna Jaw",
+        jaw: "Jaw",
+        nayi_jaw_names: ["Radad Jaw", "Jaw 2", "Jaw 3", "Jaw 4", "Jaw 5", "Jaw 6", "Jaw 7", "Jaw 8", "Khazna Jaw"],
+        kawala_jaw_names: ["Radad Jaw", "Jaw 2", "Jaw 3", "Jaw 4", "Khazna Jaw"]
+      },
+      tr: {
+        tab1: "Nayi Üretimi",
+        tab2: "Kawala Üretimi",
+        tab3: "Tüm Notalardan Maqam Rast",
+        tab4: "Nayi & Kawala Notasını Belirleme",
+        naiSectionHeader: "Nayi Ölçülerini Hesapla - Delikler ve Segmentler",
+        tooltip_nai: "Nayi'nin toplam uzunluğunu santimetre cinsinden giriniz. Parmak delikleri ve segment uzunlukları gösterilecektir.",
+        label_length: "Nayi Uzunluğu (cm):",
+        btn_calculate: "Hesapla",
+        btn_reset: "Sıfırla",
+        sectionHeader_radad: "Khazna Çapına Göre Radad Çapını Hesapla",
+        tooltip_radad: "Radad çapını doğru hesaplamak için Khazna çapını santimetre cinsinden giriniz.",
+        label_khazna: "Khazna Çapı (cm):",
+        btn_calculate_radad: "Radad Çapı Hesapla",
+        btn_reset_radad: "Sıfırla",
+        sectionHeader_kawala: "Kawala Deliklerini ve Segment Uzunluklarını Hesapla",
+        tooltip_kawala: "Kawala'nın toplam uzunluğunu santimetre cinsinden giriniz; delik pozisyonları ve segment uzunlukları hesaplanacaktır.",
+        label_totalLength: "Kawala Uzunluğu (cm):",
+        btn_calculate_kawala: "Hesapla",
+        btn_reset_kawala: "Sıfırla",
+        sectionHeader_scale: "Tüm Notalardan Maqam Rast Keşfi",
+        tooltip_scale: "Müzik anahtarını, notalar ve aralıklarla ilgili detayları görmek için seçiniz.",
+        btn_showScale: "Sesi Göster",
+        header_determine: "Nayi & Kawala Notasını Belirleme",
+        label_noteSelect: "Kromatik ölçekteki notalardan seçim yapın (DO3 - DO6):",
+        label_noteLength: "Uzunluk (L):",
+        label_noteUpperDiameter: "Üst Nayi Çapı (d₁):",
+        label_noteLowerDiameter: "Alt Nayi Çapı (d₂):",
+        label_noteHumidity: "Bağıl Nem (%):",
+        noteCorrectionInfo: "Not: Maqam Rast için düzeltme katsayısı 4.9, Bayati için 1.2'dir.",
+        label_noteCorrection: "Düzeltme Katsayısı (k):",
+        btn_calculate_note: "Not Hesapla",
+        fixed_temperature_label: "Sıcaklık:",
+        copyResults: "Sonuçları Kopyala",
+        footerText: "Tasarım ve Geliştirme: Khaled Pasha ve Badr Mohamed - Facebook Grubu: Kawala Öğrenin<br>Bu uygulama ücretsizdir ve satılamaz.",
+        // Yeni çeviri anahtarları:
+        hole: "Delik",
+        backHole: "Arka Delik (Yedinci)",
+        nai_length: "Nayi Uzunluğu",
+        jaw_radad: "Radad Parçası",
+        jaw_khazna: "Khazna Parçası",
+        jaw: "Parça",
+        nayi_jaw_names: ["Radad Parçası", "Parça 2", "Parça 3", "Parça 4", "Parça 5", "Parça 6", "Parça 7", "Parça 8", "Khazna Parçası"],
+        kawala_jaw_names: ["Radad Parçası", "Parça 2", "Parça 3", "Parça 4", "Khazna Parçası"]
+      }
+    };
+
+    // تعيين اللغة الافتراضية إلى العربية
+    let currentLang = "ar";
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      const t = translations[lang];
+
+      // تحديث عناوين التبويبات
+      document.getElementById("tabBtn_nai").innerText = t.tab1;
+      document.getElementById("tabBtn_kawala").innerText = t.tab2;
+      document.getElementById("tabBtn_scale").innerText = t.tab3;
+      document.getElementById("tabBtn_determine").innerText = t.tab4;
+
+      // تحديث عناوين الأقسام والنصوص الثابتة
+      document.getElementById("sectionHeader_nai").innerText = t.naiSectionHeader;
+      document.getElementById("tooltip_nai").innerText = t.tooltip_nai;
+      document.getElementById("label_length").innerText = t.label_length;
+      document.getElementById("btn_calculate").innerText = t.btn_calculate;
+      document.getElementById("btn_reset").innerText = t.btn_reset;
+
+      document.getElementById("sectionHeader_radad").innerText = t.sectionHeader_radad;
+      document.getElementById("tooltip_radad").innerText = t.tooltip_radad;
+      document.getElementById("label_khazna").innerText = t.label_khazna;
+      document.getElementById("btn_calculate_radad").innerText = t.btn_calculate_radad;
+      document.getElementById("btn_reset_radad").innerText = t.btn_reset_radad;
+
+      document.getElementById("sectionHeader_kawala").innerText = t.sectionHeader_kawala;
+      document.getElementById("tooltip_kawala").innerText = t.tooltip_kawala;
+      document.getElementById("label_totalLength").innerText = t.label_totalLength;
+      document.getElementById("btn_calculate_kawala").innerText = t.btn_calculate_kawala;
+      document.getElementById("btn_reset_kawala").innerText = t.btn_reset_kawala;
+
+      document.getElementById("sectionHeader_scale").innerText = t.sectionHeader_scale;
+      document.getElementById("tooltip_scale").innerText = t.tooltip_scale;
+      document.getElementById("btn_showScale").innerText = t.btn_showScale;
+
+      document.getElementById("header_determine").innerText = t.header_determine;
+      document.getElementById("label_noteSelect").innerText = t.label_noteSelect;
+      document.getElementById("label_noteLength").innerText = t.label_noteLength;
+      document.getElementById("label_noteUpperDiameter").innerText = t.label_noteUpperDiameter;
+      document.getElementById("label_noteLowerDiameter").innerText = t.label_noteLowerDiameter;
+      document.getElementById("label_noteHumidity").innerText = t.label_noteHumidity;
+      document.getElementById("noteCorrectionInfo").innerText = t.noteCorrectionInfo;
+      document.getElementById("label_noteCorrection").innerText = t.label_noteCorrection;
+      document.getElementById("btn_calculate_note").innerText = t.btn_calculate_note;
+      document.getElementById("fixed_temperature_label").innerText = t.fixed_temperature_label;
+      
+      // تحديث النص في الفوتر
+      document.querySelector('.footer').innerHTML = t.footerText;
+    }
+
+    // دوال التطبيق كما هي بدون تغيير في المنطق الأصلي مع تعديل مخرجات الجداول لاستخدام الترجمات
+
     var audioPlayers = {};
     var currentPlaying = null;
     var currentButton = null;
@@ -581,6 +793,7 @@
       return noteName + octave;
     }
     
+    // تعديل دالة حساب الرداد لتستخدم ترجمة زر النسخ
     function calculateRadadDiameter() {
       var khaznaInput = document.getElementById("khaznaDiameter");
       var resultDiv = document.getElementById("radadResult");
@@ -591,7 +804,7 @@
       }
       var radadDiameter = (val - (val * 0.191)).toFixed(2);
       resultDiv.innerHTML = "<p>قطر الرداد: " + radadDiameter + " سم</p>" +
-                              "<button class='copy-button' onclick=\"copyResult('radadResult')\">نسخ النتيجة</button>";
+                              "<button class='copy-button' onclick=\"copyResult('radadResult')\">" + translations[currentLang].copyResults + "</button>";
     }
 
     function togglePlay(btn, note) {
@@ -676,7 +889,7 @@
       window.getSelection().addRange(range);
       try {
         document.execCommand('copy');
-        alert('تم نسخ النتائج');
+        alert(translations[currentLang].copyResults);
       } catch(err) {
         alert('تعذر النسخ');
       }
@@ -684,13 +897,14 @@
     }
 
     function calculateAll() {
+      let t = translations[currentLang];
       if (!validateInput("length")) {
         alert("الرجاء إدخال طول صحيح للناي!");
         return;
       }
       const totalLength = parseFloat(document.getElementById("length").value);
       
-      // --- حساب مواقع الثقوب باستخدام الكود الجديد ---
+      // حساب مواقع الثقوب
       const division = totalLength / 8;
       const step = division / 3;
       const holes = [];
@@ -705,74 +919,61 @@
       let holesHTML = `<table style="width:100%; border-collapse: collapse;">
         <thead>
           <tr style="background-color:#ddd; color:#333;">
-            <th>الثقب</th>
-            <th>المسافة (سم)</th>
+            <th>${t.hole}</th>
+            <th>${t.nai_length} (${t.hole})</th>
           </tr>
         </thead>
         <tbody>`;
       holes.forEach(h => {
-        holesHTML += `<tr><td>الثقب ${h.hole}</td><td>${h.position.toFixed(2)}</td></tr>`;
+        holesHTML += `<tr><td>${t.hole} ${h.hole}</td><td>${h.position.toFixed(2)}</td></tr>`;
       });
-      holesHTML += `<tr><td>الثقب الخلفي (السابع)</td><td>${backHole.toFixed(2)}</td></tr>`;
+      holesHTML += `<tr><td>${t.backHole}</td><td>${backHole.toFixed(2)}</td></tr>`;
       holesHTML += `</tbody></table>`;
-      // --- نهاية تعديل الثقوب ---
       
-      // حساب طول الناي وعرض النتيجة مع الثقوب
-      let tableHTML = `<div class="result-table">
-        <table style="width:100%; border-collapse: collapse;">
-          <thead>
-            <tr style="background-color:#ddd; color:#333;">
-              <th>الوصف</th>
-              <th>القيمة (سم)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>طول الناي</td>
-              <td>${totalLength}</td>
-            </tr>
-          </tbody>
-        </table>`;
-      
-      tableHTML += holesHTML;
-      
-      // -------- استبدال كود حساب أطوال الفكوك بالكود الجديد داخل جدول --------
+      // حساب أطوال الفكوك مع استخدام مصفوفة تسميات مترجمة
       const originalNaiLength = 59.2; // الطول الأصلي للناي
       const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9]; // أطوال الفكوك الأصلية
       const ratio = totalLength / originalNaiLength;
       const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
       
+      let tableHTML = `<div class="result-table">
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr style="background-color:#ddd; color:#333;">
+              <th>${t.nai_length}</th>
+              <th>${totalLength}</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>`;
+      
+      tableHTML += holesHTML;
+      
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
-              <th>الفك</th>
+              <th> ${t.jaw} </th>
               <th>الطول (سم)</th>
             </tr>
           </thead>
           <tbody>`;
-      newFukuk.forEach((length, index) => {
-          let name;
-          if(index === 0) {
-            name = "فك الرداد";
-          } else if(index === 8) {
-            name = "فك الخزنة";
-          } else {
-            name = "الفك " + (index + 1);
-          }
-          tableHTML += `<tr><td>${name}</td><td>${length}</td></tr>`;
+      // استخدام مصفوفة التسميات الخاصة بالفكوك للناي
+      t.nayi_jaw_names.forEach((jawName, index) => {
+          tableHTML += `<tr><td>${jawName}</td><td>${newFukuk[index]}</td></tr>`;
       });
       tableHTML += `</tbody></table>`;
-      // -------- نهاية كود حساب أطوال الفكوك --------
       
       tableHTML += `<p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
           ملاحظة: يجب رفع الثقب الخلفي 1 سم و2 ملم إلى اتجاه الخزنة.
         </p>`;
-      tableHTML += `<button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>`;
+      tableHTML += `<button class="copy-button" onclick="copyResult('naiResults')">${t.copyResults}</button>`;
       
       document.getElementById("naiResults").innerHTML = tableHTML;
     }
 
     function calculateKawala() {
+      let t = translations[currentLang];
       let totalLength = parseFloat(document.getElementById('totalLength').value);
       if (isNaN(totalLength) || totalLength <= 0) {
         document.getElementById('kawalaResults').innerHTML = '<p>الرجاء إدخال قيمة صحيحة لطول الكولة.</p>';
@@ -782,13 +983,8 @@
       const holePositionsRatios = [8.6/56, 12.9/56, 17.2/56, 23.5/56, 27.8/56, 32.1/56];
       const holes = holePositionsRatios.map(ratio => (ratio * totalLength).toFixed(2));
 
-      const jawRatios = {
-        'فك الرداد': 2.5 / 40,
-        'الفك الثاني': 9.1 / 40,
-        'الفك الثالث': 10.65 / 40,
-        'الفك الرابع': 12.55 / 40,
-        'فك الخزنة': 5.2 / 40
-      };
+      // استخدام مصفوفة نسب خاصة بالفكوك للكولة
+      const jawRatiosArr = [2.5 / 40, 9.1 / 40, 10.65 / 40, 12.55 / 40, 5.2 / 40];
 
       let tableHTML = `<div class="result-table">
         <table style="width:100%; border-collapse: collapse;">
@@ -804,24 +1000,24 @@
               <td>${totalLength}</td>
             </tr>`;
       for (let i = 0; i < holes.length; i++) {
-        tableHTML += `<tr><td>الثقب ${i+1}</td><td>${holes[i]}</td></tr>`;
+        tableHTML += `<tr><td>${t.hole} ${i+1}</td><td>${holes[i]}</td></tr>`;
       }
       tableHTML += `</tbody></table>`;
       
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
-              <th>الفك</th>
+              <th>${t.jaw}</th>
               <th>الطول (سم)</th>
             </tr>
           </thead>
           <tbody>`;
-      for (const [jaw, ratio] of Object.entries(jawRatios)) {
-          let jawLength = totalLength * ratio;
-          tableHTML += `<tr><td>${jaw}</td><td>${jawLength.toFixed(2)}</td></tr>`;
+      for (let i = 0; i < jawRatiosArr.length; i++) {
+          let jawLength = totalLength * jawRatiosArr[i];
+          tableHTML += `<tr><td>${t.kawala_jaw_names[i]}</td><td>${jawLength.toFixed(2)}</td></tr>`;
       }
       tableHTML += `</tbody></table></div>
-      <button class="copy-button" onclick="copyResult('kawalaResults')">نسخ النتائج</button>`;
+      <button class="copy-button" onclick="copyResult('kawalaResults')">${t.copyResults}</button>`;
       
       document.getElementById('kawalaResults').innerHTML = tableHTML;
     }
@@ -873,7 +1069,6 @@
         let L_theoretical = v / (2 * standardFreq) - k * dEffective;
         L_theoretical = L_theoretical * 100;
         let indicator = computedFreq > standardFreq ? "العلامة مرتفعة" : "العلامة منخفضة";
-        // تحويل النغمة المختارة إلى الصيغة المطلوبة
         let noteSelectDisplay = convertToDoReMe(noteSelect);
         tableHTML += `
           <tr>
@@ -905,6 +1100,8 @@
     };
     
     document.addEventListener("DOMContentLoaded", function() {
+      // تعيين اللغة الافتراضية عند تحميل الصفحة
+      setLanguage(currentLang);
       setTimeout(() => {
         document.querySelector('.footer').classList.add('show');
       }, 1000);
