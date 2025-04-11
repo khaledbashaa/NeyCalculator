@@ -736,7 +736,12 @@
       
       tableHTML += holesHTML;
       
-      // -------- استبدال كود حساب أطوال الفكوك بالكود الجديد --------
+      // -------- استبدال كود حساب أطوال الفكوك بالكود الجديد داخل جدول --------
+      const originalNaiLength = 59.2; // الطول الأصلي للناي
+      const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9]; // أطوال الفكوك الأصلية
+      const ratio = totalLength / originalNaiLength;
+      const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
+      
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
@@ -745,22 +750,18 @@
             </tr>
           </thead>
           <tbody>`;
-      // الأطوال الأصلية للفكوك عند طول 42 سم
-      const originalLengths = [5.1, 4.21, 4.39, 4.50, 4.7, 4.95, 5.15, 5.2, 3.8];
-      const totalOriginal = 42; // سم
-      originalLengths.forEach((length, index) => {
-        const newLength = (length / totalOriginal) * totalLength;
-        let name = ""; 
-        if(index === 0) {
-          name = "فك الرداد";
-        } else if(index === 8) {
-          name = "فك الخزنة";
-        } else {
-          name = "الفك " + (index + 1);
-        }
-        tableHTML += `<tr><td>${name}</td><td>${newLength.toFixed(2)}</td></tr>`;
+      newFukuk.forEach((length, index) => {
+          let name;
+          if(index === 0) {
+            name = "فك الرداد";
+          } else if(index === 8) {
+            name = "فك الخزنة";
+          } else {
+            name = "الفك " + (index + 1);
+          }
+          tableHTML += `<tr><td>${name}</td><td>${length}</td></tr>`;
       });
-      tableHTML += `</tbody></table></div>`;
+      tableHTML += `</tbody></table>`;
       // -------- نهاية كود حساب أطوال الفكوك --------
       
       tableHTML += `<p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
