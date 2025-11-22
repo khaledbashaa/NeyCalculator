@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تطبيق صناعة الناي والكولة</title>
+  <title>تطبيق صناعة الناي والكولة - شامل</title>
   <style>
     /* إعداد متغيرات الألوان */
     :root {
@@ -161,10 +160,12 @@
       flex-wrap: wrap;
       margin-top: 15px;
     }
+    /* تحسين تنسيق الجداول لضمان ظهورها بوضوح */
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: #333;
+      background-color: #333 !important;
+      color: #fff !important;
       border-radius: 10px;
       overflow: hidden;
       margin-bottom: 20px;
@@ -172,16 +173,13 @@
     th, td {
       padding: 10px;
       text-align: center;
-      border: 1px solid #444;
+      border: 1px solid #555;
+      color: #fff;
     }
     th {
       background-color: #444;
       font-size: 18px;
-      color: var(--accent);
-    }
-    td {
-      font-size: 16px;
-      color: var(--text-color);
+      color: var(--accent) !important;
     }
     .copy-button {
       background-color: #555;
@@ -345,7 +343,6 @@
       <button class="tab-button" onclick="showTab('determine')">تحديد درجة الناي والكولة</button>
     </div>
 
-    <!-- قسم صناعة الناي -->
     <div id="nai" class="tab-content active">
       <div class="section-header">حساب مقاسات الناي - الثقوب والفكوك</div>
       <p class="tooltip">أدخل الطول الإجمالي للناي بالسنتيمتر. ستظهر لك المواقع الدقيقة للثقوب وأطوال الفكوك.</p>
@@ -369,7 +366,6 @@
       <div id="radadResult" class="result-section"></div>
     </div>
 
-    <!-- قسم صناعة الكولة -->
     <div id="kawala" class="tab-content">
       <div class="section-header">حساب مواقع الثقوب وأطوال الفكوك للكولة</div>
       <p class="tooltip">أدخل الطول الإجمالي للكولة بالسنتيمتر لحساب مواقع الثقوب وأطوال الفكوك بدقة.</p>
@@ -382,7 +378,6 @@
       <div id="kawalaResults" class="result-section"></div>
     </div>
 
-    <!-- قسم السلم المقامي -->
     <div id="scale" class="tab-content">
       <div class="section-header">استكشف مقام الراست من كل الدرجات</div>
       <p class="tooltip">اختر الدرجة الموسيقية لعرض السلم المقامي الخاص بها مع معلومات مفصلة عن النغمات والفواصل.</p>
@@ -407,7 +402,6 @@
       <div id="scaleResult" class="result-section scale-result"></div>
     </div>
 
-    <!-- قسم تحديد درجة الناي والكولة -->
     <div id="determine" class="tab-content">
       <div class="light-box">
         <h1>تحديد درجة الكوله والناي</h1>
@@ -477,7 +471,7 @@
         
         <button onclick="calculateNote()">احسب الدرجة</button>
         
-        <h2 id="noteResult"></h2>
+        <div id="noteResult"></div>
       </div>
     </div>
 
@@ -494,7 +488,7 @@
   </div>
 
   <script>
-    // دالة تشغيل النغمات (النسخة الأصلية التي تعمل في قسم مقام الراست)
+    // دالة تشغيل النغمات
     var audioPlayers = {};
     var currentPlaying = null;
     var currentButton = null;
@@ -546,7 +540,7 @@
       "سي نصف دييز": "https://dl.dropboxusercontent.com/scl/fi/rgf4qmqwxuoszh9iycy3j/.mp3?rlkey=88bpff50f5b41mnf084aybl7i"
     };
 
-    // دالة تحويل النغمة من صيغة "C3" إلى الصيغة المطلوبة "do3"
+    // دالة تحويل النغمة
     function convertToDoReMe(note) {
       let pattern = /^([A-G]#?)(\d)$/;
       let match = note.match(pattern);
@@ -572,10 +566,10 @@
       return note;
     }
 
-    // دالة تحويل التردد إلى اسم النغمة باستخدام الحروف المطلوبة
+    // دالة تحويل التردد إلى اسم النغمة
     function frequencyToNoteName(frequency) {
       let midiNumber = Math.round(12 * Math.log2(frequency / 440) + 69);
-      let noteNames = ["do", "do#", "re", "re#", "me", "fa", "fa#", "sol", "sol#", "la", "la#", "si"];
+      let noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
       let noteName = noteNames[midiNumber % 12];
       let octave = Math.floor(midiNumber / 12) - 1;
       return noteName + octave;
@@ -690,11 +684,14 @@
       }
       const totalLength = parseFloat(document.getElementById("length").value);
       
-      // --- حساب مواقع الثقوب باستخدام الكود الجديد ---      
+      // --- حساب مواقع الثقوب باستخدام الكود المعدل ---      
       const division = totalLength / 8;
       const step = division / 3;
       const holes = [];
-      holes.push({ hole: 1, position: division + 1 }); // الثقب الأول
+      
+      // معادلة الثقب الأول: الطول الكلي مقسوماً على 7.5
+      holes.push({ hole: 1, position: totalLength / 7.5 }); 
+
       holes.push({ hole: 2, position: holes[0].position + step });
       holes.push({ hole: 3, position: holes[1].position + step });
       holes.push({ hole: 4, position: holes[2].position + (step * 2) });
@@ -715,7 +712,6 @@
       });
       holesHTML += `<tr><td>الثقب الخلفي (السابع)</td><td>${backHole.toFixed(2)}</td></tr>`;
       holesHTML += `</tbody></table>`;
-      // --- نهاية كود حساب مواقع الثقوب للناي ---
       
       // حساب طول الناي وعرض النتيجة مع الثقوب
       let tableHTML = `<div class="result-table">
@@ -736,9 +732,9 @@
       
       tableHTML += holesHTML;
       
-      // -------- استبدال كود حساب أطوال الفكوك بالكود الجديد داخل جدول --------
-      const originalNaiLength = 59.2; // الطول الأصلي للناي
-      const originalFukuk = [6.4, 6.5, 6.6, 6.7, 6.8, 7, 7.1, 7.2, 4.9]; // أطوال الفكوك الأصلية
+      // -------- حساب أطوال الفكوك بالنسب الجديدة (أساس 60سم) --------
+      const originalNaiLength = 60; // الطول الأصلي للناي
+      const originalFukuk = [6, 6.2, 6.4, 6.6, 6.8, 7.1, 7.4, 7.6, 5.9]; // أطوال الفكوك الأصلية
       const ratio = totalLength / originalNaiLength;
       const newFukuk = originalFukuk.map(length => (length * ratio).toFixed(2));
       
@@ -762,10 +758,9 @@
           tableHTML += `<tr><td>${name}</td><td>${length}</td></tr>`;
       });
       tableHTML += `</tbody></table>`;
-      // -------- نهاية كود حساب أطوال الفكوك --------
       
       tableHTML += `<p style="color:red; font-size:14px; text-align:center; margin-top:10px;">
-          ملاحظة: يجب رفع الثقب الخلفي 1 سم و2 ملم إلى اتجاه الخزنة.
+          ملاحظة: يجب رفع الثقب الخلفي 1 سم  إلى اتجاه الخزنة.
         </p>`;
       tableHTML += `<button class="copy-button" onclick="copyResult('naiResults')">نسخ النتائج</button>`;
       
@@ -780,14 +775,14 @@
         return;
       }
       
-      // الكود الجديد لحساب مواقع الثقوب بحسب المطلوب
+      // حساب مواقع الثقوب للكولة
       let hole1 = 0.16 * L;
-      let halfHole1 = hole1 / 2; // تعادل 0.08L
-      let hole2 = hole1 + halfHole1;   // 0.16L + 0.08L = 0.24L
-      let hole3 = hole2 + halfHole1;     // 0.24L + 0.08L = 0.32L
-      let hole4 = 0.42 * L;            // بحسب المثال: عند L=40 يكون ≈16.54 سم
-      let hole5 = hole4 + halfHole1;     // 0.42L + 0.08L
-      let hole6 = hole5 + halfHole1;     // (hole5) + 0.08L
+      let halfHole1 = hole1 / 2; 
+      let hole2 = hole1 + halfHole1;   
+      let hole3 = hole2 + halfHole1;     
+      let hole4 = 0.42 * L;            
+      let hole5 = hole4 + halfHole1;     
+      let hole6 = hole5 + halfHole1;     
       
       // تكوين جدول النتائج لمواقع الثقوب
       let holesHTML = `<table style="width:100%; border-collapse: collapse;">
@@ -807,7 +802,7 @@
         </tbody>
       </table>`;
       
-      // حساب الفكوك كما كان في السابق باستخدام نسب محددة
+      // حساب الفكوك 
       const jawRatios = {
         'فك الرداد': 2.5 / 40,
         'الفك الثاني': 9.1 / 40,
@@ -832,10 +827,8 @@
           </tbody>
         </table>`;
       
-      // إضافة جدول الثقوب باستخدام الكود الجديد
       tableHTML += holesHTML;
       
-      // حساب الفكوك وإضافتها إلى الجدول
       tableHTML += `<table style="width:100%; border-collapse: collapse; margin-top:20px;">
           <thead>
             <tr style="background-color:#ddd; color:#333;">
@@ -860,83 +853,91 @@
       let d2_cm = parseFloat(document.getElementById('noteLowerDiameter').value);
       let humidity = parseFloat(document.getElementById('noteHumidity').value);
       let k = parseFloat(document.getElementById('noteCorrection').value);
+      
       if (isNaN(L_cm) || isNaN(d1_cm) || isNaN(d2_cm) || isNaN(humidity) || isNaN(k)) {
-        alert("يرجى إدخال جميع القيم بشكل صحيح.");
+        alert("يرجى إدخال جميع القيم بشكل صحيح (أرقام إنجليزية).");
         return;
       }
+      
       let L = L_cm / 100;
       let d1 = d1_cm / 100;
       let d2 = d2_cm / 100;
       let dEffective = (d1 + d2) / 2;
       let temperature = 37;
+      
+      // سرعة الصوت
       let v = 331.4 + 0.6 * temperature + 0.0124 * humidity;
-      let n = 1;
+      
+      // التردد المحسوب
+      let n = 1; 
       let computedFreq = (n * v) / (2 * (L + k * dEffective));
-      let computedNote = frequencyToNoteName(computedFreq);
       
-      let tableHTML = `<table style="width:100%; border-collapse: collapse;">
-        <thead>
-          <tr style="background-color:#ddd; color:#333;">
-            <th>الوصف</th>
-            <th>القيمة</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>سرعة الصوت (م/ث)</td>
-            <td>${v.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td>التردد المحتسب (Hz)</td>
-            <td>${computedFreq.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td>الدرجة الموسيقية</td>
-            <td>${computedNote}</td>
-          </tr>`;
+      // حساب النغمة والتردد القياسي
+      let midiNumber = Math.round(12 * Math.log2(computedFreq / 440) + 69);
+      let standardFreq = 440 * Math.pow(2, (midiNumber - 69) / 12);
       
-      const noteSelect = document.getElementById('noteSelect').value;
-      if (noteSelect !== "") {
-        const standardFreq = chromaticNotes[noteSelect];
-        let L_theoretical = v / (2 * standardFreq) - k * dEffective;
-        L_theoretical = L_theoretical * 100;
-        let indicator = computedFreq > standardFreq ? "العلامة مرتفعة" : "العلامة منخفضة";
-        // تحويل النغمة المختارة إلى الصيغة المطلوبة
-        let noteSelectDisplay = convertToDoReMe(noteSelect);
-        tableHTML += `
-          <tr>
-            <td>التردد القياسي (${noteSelectDisplay}) (Hz)</td>
-            <td>${standardFreq}</td>
-          </tr>
-          <tr>
-            <td>الطول النظري المطلوب (سم)</td>
-            <td>${L_theoretical.toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td>الإشارة</td>
-            <td>${indicator}</td>
-          </tr>`;
+      // اسم النغمة
+      let noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+      let noteName = noteNames[midiNumber % 12] + (Math.floor(midiNumber / 12) - 1);
+      let arabicNote = convertToDoReMe(noteName);
+
+      // حساب الطول النظري المطلوب للوصول للتردد القياسي
+      // f = v / 2(L_theo + k*d)  => L_theo = (v / 2f) - k*d
+      let theoreticalLengthMeters = (v / (2 * standardFreq)) - (k * dEffective);
+      let theoreticalLengthCm = theoreticalLengthMeters * 100;
+
+      // تحديد حالة العلامة (منخفضة/عالية)
+      let status = "";
+      let diff = computedFreq - standardFreq;
+      // هامش بسيط جداً للخطأ
+      if (Math.abs(diff) < 0.5) {
+        status = "مضبوطة تماماً";
+      } else if (diff < 0) {
+        status = "العلامة منخفضة";
+      } else {
+        status = "العلامة عالية";
       }
       
-      tableHTML += `</tbody></table>`;
+      // بناء الجدول التفصيلي (مطابق للصورة)
+      let tableHTML = `<table style="width:100%; border-collapse: collapse; background-color:#333; color:#fff; margin-top:15px;">
+          <thead>
+            <tr style="background-color:#444; color:#ffd700;">
+              <th style="color:#ffd700; border:1px solid #555;">البيان</th>
+              <th style="color:#ffd700; border:1px solid #555;">القيمة</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#fff; border:1px solid #555;">سرعة الصوت (م/ث)</td>
+              <td style="color:#fff; border:1px solid #555; direction:ltr;">${v.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td style="color:#fff; border:1px solid #555;">التردد المحسوب (Hz)</td>
+              <td style="color:#fff; border:1px solid #555; direction:ltr;">${computedFreq.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td style="color:#fff; border:1px solid #555;">الدرجة الموسيقية</td>
+              <td style="color:#ffd700; font-weight:bold; font-size:20px; border:1px solid #555;">
+                ${arabicNote}
+              </td>
+            </tr>
+            <tr>
+              <td style="color:#fff; border:1px solid #555;">التردد القياسي (Hz) (${arabicNote})</td>
+              <td style="color:#fff; border:1px solid #555; direction:ltr;">${standardFreq.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td style="color:#fff; border:1px solid #555;">الطول النظري المطلوب (سم)</td>
+              <td style="color:#fff; border:1px solid #555; direction:ltr;">${theoreticalLengthCm.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td style="color:#fff; border:1px solid #555;">الإشارة</td>
+              <td style="color:#fff; border:1px solid #555; font-weight:bold;">${status}</td>
+            </tr>
+          </tbody>
+        </table>`;
+      
       document.getElementById('noteResult').innerHTML = tableHTML;
     }
-    
-    const chromaticNotes = {
-      "C3": 130.81, "C#3": 138.59, "D3": 146.83, "D#3": 155.56, "E3": 164.81, "F3": 174.61,
-      "F#3": 185.00, "G3": 196.00, "G#3": 207.65, "A3": 220.00, "A#3": 233.08, "B3": 246.94,
-      "C4": 261.63, "C#4": 277.18, "D4": 293.66, "D#4": 311.13, "E4": 329.63, "F4": 349.23,
-      "F#4": 369.99, "G4": 392.00, "G#4": 415.30, "A4": 440.00, "A#4": 466.16, "B4": 493.88,
-      "C5": 523.25, "C#5": 554.37, "D5": 587.33, "D#5": 622.25, "E5": 659.25, "F5": 698.46,
-      "F#5": 739.99, "G5": 783.99, "G#5": 830.61, "A5": 880.00, "A#5": 932.33, "B5": 987.77,
-      "C6": 1046.50
-    };
-    
-    document.addEventListener("DOMContentLoaded", function() {
-      setTimeout(() => {
-        document.querySelector('.footer').classList.add('show');
-      }, 1000);
-    });
   </script>
 </body>
 </html>
